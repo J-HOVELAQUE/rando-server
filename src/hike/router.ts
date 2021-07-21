@@ -1,13 +1,10 @@
 import express, { Request, Response } from "express";
 import recordHike from "./controllers/recordHike";
+import getHike from "./controllers/getHike";
 
 const hikeRouter = express.Router();
 
-hikeRouter.get("/", (req: Request, res: Response) => {
-  res.json({
-    message: "Get all hike in db",
-  });
-});
+hikeRouter.get("/", getHike);
 
 hikeRouter.post("/", recordHike);
 
