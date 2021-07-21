@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const http_1 = __importDefault(require("http"));
-const router_1 = __importDefault(require("./router"));
 const morgan_1 = __importDefault(require("morgan"));
+const router_1 = __importDefault(require("./hike/router"));
 function buildServer() {
     const app = express_1.default();
     const server = http_1.default.createServer(app);
@@ -14,7 +14,7 @@ function buildServer() {
     app.use(morgan_1.default("dev"));
     app.use(express_1.default.json());
     app.use(express_1.default.urlencoded({ extended: false }));
-    app.use("/", router_1.default);
+    app.use("/hike", router_1.default);
     return {
         start: () => {
             server.listen(3000, () => {
