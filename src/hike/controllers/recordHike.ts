@@ -1,12 +1,8 @@
 import HikeModel from "../model/HikeModel";
 import { Request, Response } from "express";
 
-export default function (req: Request, res: Response) {
-  console.log(">>>>>>>>>>>>>>>NAME", req.body.name);
-
-  const newHike = new HikeModel({
-    name: req.body.name,
-  });
+export default async function (req: Request, res: Response) {
+  const newHike = new HikeModel(req.body);
 
   newHike.save();
 }
