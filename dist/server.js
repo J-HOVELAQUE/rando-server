@@ -4,17 +4,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-function server() {
+const http_1 = __importDefault(require("http"));
+const router_1 = __importDefault(require("./router"));
+const morgan_1 = __importDefault(require("morgan"));
+function buildServer() {
+    const app = express_1.default();
+    const server = http_1.default.createServer(app);
+    // Middlewares
+    app.use(morgan_1.default("dev"));
+    app.use(express_1.default.json());
+    app.use(express_1.default.urlencoded({ extended: false }));
+    app.use("/", router_1.default);
     return {
         start: () => {
-            const app = express_1.default();
-            app.get("/", function (req, res) {
-                res.send("Salut tous le monde");
-            });
-            app.listen(3000, function () {
-                console.log("Serveur démarré");
+            server.listen(3000, () => {
+                console.log("Server listen on port 3000");
             });
         },
     };
 }
-exports.default = server;
+exports.default = buildServer;
