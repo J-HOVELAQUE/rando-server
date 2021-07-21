@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import recordHike from "./controllers/recordHike";
 
 const hikeRouter = express.Router();
 
@@ -8,11 +9,7 @@ hikeRouter.get("/", (req: Request, res: Response) => {
   });
 });
 
-hikeRouter.post("/", (req: Request, res: Response) => {
-  res.json({
-    message: "Recording an hike",
-  });
-});
+hikeRouter.post("/", recordHike);
 
 hikeRouter.put("/", (req: Request, res: Response) => {
   res.json({
