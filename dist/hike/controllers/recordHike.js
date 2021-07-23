@@ -17,6 +17,7 @@ function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const newHike = new HikeModel_1.default(req.body);
         newHike.save();
+        res.json({ message: "recorded" });
     });
 }
 exports.default = default_1;
