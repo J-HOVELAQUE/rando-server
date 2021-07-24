@@ -3,6 +3,7 @@ import express from "express";
 import http from "http";
 import morgan from "morgan";
 import hikeRouter from "./hike/router";
+import userRouter from "./user/router/index";
 
 // const express = require("express");
 
@@ -20,6 +21,7 @@ export default function buildServer(): Server {
   app.use(express.urlencoded({ extended: false }));
 
   app.use("/hike", hikeRouter);
+  app.use("/user", userRouter);
 
   return {
     start: () => {

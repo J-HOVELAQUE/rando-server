@@ -4,19 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
-const mapMarker = new mongoose_1.default.Schema({
-    lat: Number,
-    long: Number,
-});
 const hikeSchema = new mongoose_1.default.Schema({
-    name: String,
-    montainLocation: String,
     durationInMinutes: Number,
     elevationInMeters: Number,
-    photo: String,
     distanceInMeters: Number,
+    startingAltitude: Number,
+    arrivalAltitude: Number,
     description: String,
-    mapMarkers: [mapMarker],
+    date: Date,
+    participants: [
+        {
+            type: mongoose_1.default.Schema.Types.ObjectId,
+            ref: "Users",
+        },
+    ],
 });
 const HikeModel = mongoose_1.default.model("Hikes", hikeSchema);
 exports.default = HikeModel;
