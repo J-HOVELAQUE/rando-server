@@ -4,14 +4,14 @@ import { Schema, model, connect } from "mongoose";
 interface User {
   name: String;
   firstname: String;
-  dateOfBirth: Date;
+  dateOfBirth?: Date;
   photo?: String;
 }
 
 const userSchema = new Schema<User>({
   name: { type: String, required: true },
   firstname: { type: String, required: true },
-  dateOfBirth: { type: Date, required: true },
+  dateOfBirth: Date,
   photo: String,
 });
 

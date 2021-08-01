@@ -8,6 +8,7 @@ const http_1 = __importDefault(require("http"));
 const morgan_1 = __importDefault(require("morgan"));
 const router_1 = __importDefault(require("./hike/router"));
 const index_1 = __importDefault(require("./user/router/index"));
+const index_2 = __importDefault(require("./place/router/index"));
 function buildServer() {
     const app = express_1.default();
     const server = http_1.default.createServer(app);
@@ -17,6 +18,7 @@ function buildServer() {
     app.use(express_1.default.urlencoded({ extended: false }));
     app.use("/hike", router_1.default);
     app.use("/user", index_1.default);
+    app.use("/place", index_2.default);
     return {
         start: () => {
             server.listen(3000, () => {

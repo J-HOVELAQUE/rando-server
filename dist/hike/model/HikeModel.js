@@ -18,6 +18,10 @@ const hikeSchema = new mongoose_1.default.Schema({
             ref: "Users",
         },
     ],
+    place: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "Places",
+    },
 });
 const HikeModel = mongoose_1.default.model("Hikes", hikeSchema);
 exports.default = HikeModel;

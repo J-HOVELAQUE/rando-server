@@ -12,27 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const server_1 = __importDefault(require("./server"));
-const mongoose_1 = __importDefault(require("mongoose"));
-const uriConnection = "mongodb://localhost:27017/test";
-const option = {
-    connectTimeoutMS: 5000,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-};
-const app = server_1.default();
-app.start();
-function createConnection() {
+const PlaceModel_1 = __importDefault(require("../model/PlaceModel"));
+function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const connection = mongoose_1.default.connect(uriConnection, option);
-            console.log(`*** Database connection to  created ***`);
-            return connection;
-        }
-        catch (err) {
-            console.log("ERROR during database connection", err);
-            throw err;
-        }
+        const newPlace = new PlaceModel_1.default(req.body);
+        newPlace.save();
+        res.json({ message: "place recorded" });
     });
 }
-createConnection();
+exports.default = default_1;

@@ -14,6 +14,10 @@ const hikeSchema = new mongoose.Schema({
       ref: "Users",
     },
   ],
+  place: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Places",
+  },
 });
 
 const HikeModel = mongoose.model("Hikes", hikeSchema);

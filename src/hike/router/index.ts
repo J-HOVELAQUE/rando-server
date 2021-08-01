@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
-import recordHike from "./controllers/recordHike";
-import getHike from "./controllers/getHike";
+import recordHike from "../controllers/recordHike";
+import getHike from "../controllers/getHike";
 
 const hikeRouter = express.Router();
 
