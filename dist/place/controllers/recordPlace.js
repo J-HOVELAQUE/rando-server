@@ -32,12 +32,31 @@ function default_1(req, res) {
         catch (error) {
             const errorReport = error;
             const errorMessages = errorReport.details.map((err) => err.message);
-            res.json({ errors: errorMessages });
+            res.status(400).json({
+                error: "payloadError",
+                details: errorMessages,
+            });
             return;
         }
-        const newPlace = new PlaceModel_1.default(req.body);
-        newPlace.save();
-        res.json({ message: `place ${payload.name} recorded` });
+        try {
+            const newPlace = new PlaceModel_1.default(req.body);
+            yield newPlace.save();
+        }
+        catch (error) {
+            if (error.code && error.code === 11000) {
+                res.status(409).json({
+                    error: "uniqueIndexError",
+                    message: "a place with this name already existing",
+                });
+                return;
+            }
+            res.status(500).json({
+                error: "databaseError",
+                details: error,
+            });
+            return;
+        }
+        res.status(201).json({ message: `place ${payload.name} recorded` });
     });
 }
 exports.default = default_1;

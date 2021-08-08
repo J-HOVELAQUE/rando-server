@@ -22,12 +22,30 @@ export default async function (req: Request, res: Response) {
     const errorMessages: String[] = errorReport.details.map(
       (err) => err.message
     );
-    res.json({ errors: errorMessages });
+    res.status(400).json({
+      error: "payloadError",
+      details: errorMessages,
+    });
     return;
   }
-  const newPlace = new PlaceModel(req.body);
 
-  newPlace.save();
+  try {
+    const newPlace = new PlaceModel(req.body);
+    await newPlace.save();
+  } catch (error) {
+    if (error.code && error.code === 11000) {
+      res.status(409).json({
+        error: "uniqueIndexError",
+        message: "a place with this name already existing",
+      });
+      return;
+    }
+    res.status(500).json({
+      error: "databaseError",
+      details: error,
+    });
+    return;
+  }
 
-  res.json({ message: `place ${payload.name} recorded` });
+  res.status(201).json({ message: `place ${payload.name} recorded` });
 }

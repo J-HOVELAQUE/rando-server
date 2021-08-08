@@ -9,7 +9,7 @@ interface Place {
 }
 
 const placeSchema = new Schema<Place>({
-  name: { type: String, required: true },
+  name: { type: String, required: true, unique: true },
   mountainLocation: { type: String, required: true },
   altitudeInMeters: { type: Number, required: true },
   city: String,
