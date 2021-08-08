@@ -13,11 +13,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const PlaceModel_1 = __importDefault(require("../model/PlaceModel"));
+const joi_1 = __importDefault(require("joi"));
+const placeSchema = joi_1.default.object({
+    name: joi_1.default.string().required(),
+    mountainLocation: joi_1.default.string().required(),
+    altitudeInMeters: joi_1.default.number().integer().required(),
+    city: joi_1.default.string(),
+    picture: joi_1.default.string(),
+});
 function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
+        const payload = req.body;
+        try {
+            joi_1.default.assert(payload, placeSchema, {
+                abortEarly: false,
+            });
+        }
+        catch (error) {
+            const errorReport = error;
+            const errorMessages = errorReport.details.map((err) => err.message);
+            res.json({ errors: errorMessages });
+            return;
+        }
         const newPlace = new PlaceModel_1.default(req.body);
         newPlace.save();
-        res.json({ message: "place recorded" });
+        res.json({ message: `place ${payload.name} recorded` });
     });
 }
 exports.default = default_1;
