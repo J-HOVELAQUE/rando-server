@@ -1,5 +1,5 @@
 {
   "mongodb": {
-    "uriConnection": "mongodb://localhost:27017/dev"
+    "uriConnection": "mongodb://localhost:27017/rando_dev"
   }
 }
