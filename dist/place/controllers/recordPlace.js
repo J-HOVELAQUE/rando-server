@@ -50,7 +50,7 @@ function default_1(req, res) {
                 });
                 return;
             }
-            res.status(500).json({
+            res.status(503).json({
                 error: "databaseError",
                 details: error,
             });

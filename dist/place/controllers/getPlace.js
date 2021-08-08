@@ -15,8 +15,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const PlaceModel_1 = __importDefault(require("../model/PlaceModel"));
 function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const placeInDatabase = yield PlaceModel_1.default.find();
-        res.json(placeInDatabase);
+        try {
+            const placesInDatabase = yield PlaceModel_1.default.find();
+            res.status(200).json({
+                message: `there is ${placesInDatabase.length} in database`,
+                places: placesInDatabase,
+            });
+        }
+        catch (error) {
+            res.status(503).json({
+                error: "databaseError",
+                details: error,
+            });
+        }
     });
 }
 exports.default = default_1;
