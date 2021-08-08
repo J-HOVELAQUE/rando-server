@@ -14,7 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const server_1 = __importDefault(require("./server"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const uriConnection = "mongodb://localhost:27017/test";
+const config_1 = __importDefault(require("config"));
+const uriConnection = config_1.default.get("mongodb.uriConnection");
 const option = {
     connectTimeoutMS: 5000,
     useNewUrlParser: true,

@@ -1,0 +1,5 @@
+{
+  "mongodb": {
+    "uriConnection": "mongodb://localhost:27017/test"
+  }
+}

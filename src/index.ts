@@ -1,7 +1,8 @@
 import server from "./server";
 import mongoose, { Mongoose } from "mongoose";
+import config from "config";
 
-const uriConnection = "mongodb://localhost:27017/test";
+const uriConnection: string = config.get("mongodb.uriConnection");
 
 const option = {
   connectTimeoutMS: 5000,
