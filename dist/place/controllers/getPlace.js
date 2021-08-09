@@ -17,9 +17,19 @@ function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const placesInDatabase = yield PlaceModel_1.default.find();
+            const places = placesInDatabase.map((place) => {
+                return {
+                    _id: place._id,
+                    name: place.name,
+                    altitudeInMeters: place.altitudeInMeters,
+                    mountainLocation: place.mountainLocation,
+                    picture: place.picture,
+                    city: place.city,
+                };
+            });
             res.status(200).json({
                 message: `there is ${placesInDatabase.length} in database`,
-                places: placesInDatabase,
+                places: places,
             });
         }
         catch (error) {
