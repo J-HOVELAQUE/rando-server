@@ -6,6 +6,7 @@ import hikeRouter from "./hike/router";
 import userRouter from "./user/router/index";
 import placeRouter from "./place/router/index";
 import config from "config";
+import fileUpload from "express-fileupload";
 
 // const express = require("express");
 const ALLOWED_ORIGIN: string = config.get("allowedOrigin");
@@ -22,6 +23,7 @@ export default function buildServer(): Server {
   app.use(morgan("dev"));
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
+  app.use(fileUpload());
 
   // Set the header for CORS policy //
   app.use(function (req, res, next) {

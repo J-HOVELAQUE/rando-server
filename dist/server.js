@@ -10,6 +10,7 @@ const router_1 = __importDefault(require("./hike/router"));
 const index_1 = __importDefault(require("./user/router/index"));
 const index_2 = __importDefault(require("./place/router/index"));
 const config_1 = __importDefault(require("config"));
+const express_fileupload_1 = __importDefault(require("express-fileupload"));
 // const express = require("express");
 const ALLOWED_ORIGIN = config_1.default.get("allowedOrigin");
 function buildServer() {
@@ -19,6 +20,7 @@ function buildServer() {
     app.use(morgan_1.default("dev"));
     app.use(express_1.default.json());
     app.use(express_1.default.urlencoded({ extended: false }));
+    app.use(express_fileupload_1.default());
     // Set the header for CORS policy //
     app.use(function (req, res, next) {
         res.setHeader("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
