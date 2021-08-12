@@ -3,36 +3,73 @@ import PlaceModel from "../model/PlaceModel";
 import Joi, { ValidationError } from "joi";
 import Jimp from "jimp";
 import { UploadedFile, FileArray } from "express-fileupload";
+import { v2 } from "cloudinary";
+import { unlink } from "fs/promises";
+
+const cloudinary = v2;
+
+interface Place {
+  name: string;
+  mountainLocation: string;
+  altitudeInMeters: number;
+  city?: string;
+  picture?: string;
+}
+
+cloudinary.config({
+  cloud_name: "dhov1sjr7",
+  api_key: "157842163261796",
+  api_secret: "MX3FORXNb-9duMrGfsI3RdJvvyg",
+  secure: true,
+});
 
 const placeSchema = Joi.object({
   name: Joi.string().required(),
   mountainLocation: Joi.string().required(),
   altitudeInMeters: Joi.number().integer().required(),
   city: Joi.string(),
-  picture: Joi.string(),
 });
 
-async function savePictureInCLoudinary(files: FileArray): Promise<string> {
-  for (const file in files) {
-    const newFile = files[file];
+async function savePictureInCLoudinary(
+  files: FileArray,
+  namePlace: string
+): Promise<string> {
+  let pictureUrl: string = "";
+
+  for (const fileName in files) {
+    const newFile = files[fileName];
+
     if (Array.isArray(newFile)) {
       newFile.forEach((file) => {
         file.mv("./tmp/avatar.jpg");
       });
-
       return "OK";
     }
+
+    const tempPicturePath: string = "./tmp/" + newFile.name;
+
     const uploadedPicture = await Jimp.read(newFile.data);
     uploadedPicture.resize(600, Jimp.AUTO);
     const savedResizedPicture = await uploadedPicture.writeAsync(
-      "./tmp/resized.jpg"
+      tempPicturePath
     );
+
+    const resultCloudinary = await cloudinary.uploader.upload(
+      `./tmp/${newFile.name}`,
+      {
+        public_id: "rando/places/" + namePlace,
+      }
+    );
+    pictureUrl = resultCloudinary.url;
+    unlink(tempPicturePath);
   }
-  return "OK";
+
+  return pictureUrl;
 }
 
 export default async function (req: Request, res: Response) {
-  const payload = req.body;
+  const payload: Place = req.body;
+  // let pictureUrl: string = "";
 
   ///// Payload validation
   try {
@@ -53,12 +90,12 @@ export default async function (req: Request, res: Response) {
 
   ///// Rec picture
   if (req.files !== undefined) {
-    savePictureInCLoudinary(req.files);
+    payload.picture = await savePictureInCLoudinary(req.files, payload.name);
   }
 
   ///// Rec in database
   try {
-    const newPlace = new PlaceModel(req.body);
+    const newPlace = new PlaceModel(payload);
     await newPlace.save();
   } catch (error) {
     if (error.code && error.code === 11000) {
