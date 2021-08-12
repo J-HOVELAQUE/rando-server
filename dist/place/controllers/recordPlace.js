@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const PlaceModel_1 = __importDefault(require("../model/PlaceModel"));
 const joi_1 = __importDefault(require("joi"));
+const jimp_1 = __importDefault(require("jimp"));
 const placeSchema = joi_1.default.object({
     name: joi_1.default.string().required(),
     mountainLocation: joi_1.default.string().required(),
@@ -21,9 +22,27 @@ const placeSchema = joi_1.default.object({
     city: joi_1.default.string(),
     picture: joi_1.default.string(),
 });
+function savePictureInCLoudinary(files) {
+    return __awaiter(this, void 0, void 0, function* () {
+        for (const file in files) {
+            const newFile = files[file];
+            if (Array.isArray(newFile)) {
+                newFile.forEach((file) => {
+                    file.mv("./tmp/avatar.jpg");
+                });
+                return "OK";
+            }
+            const uploadedPicture = yield jimp_1.default.read(newFile.data);
+            uploadedPicture.resize(600, jimp_1.default.AUTO);
+            const savedResizedPicture = yield uploadedPicture.writeAsync("./tmp/resized.jpg");
+        }
+        return "OK";
+    });
+}
 function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const payload = req.body;
+        ///// Payload validation
         try {
             joi_1.default.assert(payload, placeSchema, {
                 abortEarly: false,
@@ -38,6 +57,11 @@ function default_1(req, res) {
             });
             return;
         }
+        ///// Rec picture
+        if (req.files !== undefined) {
+            savePictureInCLoudinary(req.files);
+        }
+        ///// Rec in database
         try {
             const newPlace = new PlaceModel_1.default(req.body);
             yield newPlace.save();

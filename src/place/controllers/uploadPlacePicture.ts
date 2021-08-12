@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { v2 } from "cloudinary";
 import { UploadedFile, FileArray } from "express-fileupload";
+import Jimp from "jimp";
+import path from "path";
 
 const cloudinary = v2;
 
@@ -12,8 +14,6 @@ cloudinary.config({
 });
 
 export default async function uploadPlacePicture(req: Request, res: Response) {
-  // console.log(">>>>>>", req.files);
-
   const newFiles = req.files;
 
   if (!newFiles) {
@@ -32,9 +32,15 @@ export default async function uploadPlacePicture(req: Request, res: Response) {
       });
       return;
     }
-    newFile.mv("./tmp/avatar.jpg");
+    // newFile.mv("./tmp/avatar.jpg");
 
-    console.log("AHAHAA");
+    const uploadedPicture = await Jimp.read(newFile.data);
+    uploadedPicture.resize(600, Jimp.AUTO);
+    const savedResizedPicture = await uploadedPicture.writeAsync(
+      "./tmp/resized.jpg"
+    );
+
+    console.log("AHAHAA", req.body);
   }
 
   res.json({

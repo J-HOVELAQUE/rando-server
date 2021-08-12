@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const cloudinary_1 = require("cloudinary");
+const jimp_1 = __importDefault(require("jimp"));
 const cloudinary = cloudinary_1.v2;
 cloudinary.config({
     cloud_name: "dhov1sjr7",
@@ -19,7 +23,6 @@ cloudinary.config({
 });
 function uploadPlacePicture(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        // console.log(">>>>>>", req.files);
         const newFiles = req.files;
         if (!newFiles) {
             res.json({ message: "no files" });
@@ -36,8 +39,11 @@ function uploadPlacePicture(req, res) {
                 });
                 return;
             }
-            newFile.mv("./tmp/avatar.jpg");
-            console.log("AHAHAA");
+            // newFile.mv("./tmp/avatar.jpg");
+            const uploadedPicture = yield jimp_1.default.read(newFile.data);
+            uploadedPicture.resize(600, jimp_1.default.AUTO);
+            const savedResizedPicture = yield uploadedPicture.writeAsync("./tmp/resized.jpg");
+            console.log("AHAHAA", req.body);
         }
         res.json({
             message: "pict uploaded",
