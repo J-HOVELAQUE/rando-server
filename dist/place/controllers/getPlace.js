@@ -12,32 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const PlaceModel_1 = __importDefault(require("../model/PlaceModel"));
+const buildPlaceRepository_1 = __importDefault(require("../repository/buildPlaceRepository"));
+const placeRepository = buildPlaceRepository_1.default();
 function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const placesInDatabase = yield PlaceModel_1.default.find();
-            const places = placesInDatabase.map((place) => {
-                return {
-                    _id: place._id,
-                    name: place.name,
-                    altitudeInMeters: place.altitudeInMeters,
-                    mountainLocation: place.mountainLocation,
-                    picture: place.picture,
-                    city: place.city,
-                };
-            });
-            res.status(200).json({
-                message: `there is ${placesInDatabase.length} in database`,
-                places: places,
-            });
-        }
-        catch (error) {
+        const getPlacesResult = yield placeRepository.findAll();
+        if (getPlacesResult.outcome === "FAILURE") {
             res.status(503).json({
                 error: "databaseError",
-                details: error,
+                details: getPlacesResult.detail,
             });
+            return;
         }
+        res.status(200).json({
+            message: `there is ${getPlacesResult.data.length} in database`,
+            places: getPlacesResult.data,
+        });
     });
 }
 exports.default = default_1;

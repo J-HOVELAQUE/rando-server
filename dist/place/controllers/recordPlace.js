@@ -58,7 +58,6 @@ function savePictureInCLoudinary(files, namePlace) {
 function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const payload = req.body;
-        // let pictureUrl: string = "";
         ///// Payload validation
         try {
             joi_1.default.assert(payload, placeSchema, {

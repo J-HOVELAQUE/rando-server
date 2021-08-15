@@ -71,7 +71,6 @@ async function savePictureInCLoudinary(
 
 export default async function (req: Request, res: Response) {
   const payload: Place = req.body;
-  // let pictureUrl: string = "";
 
   ///// Payload validation
   try {
