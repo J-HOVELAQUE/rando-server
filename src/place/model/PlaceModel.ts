@@ -1,12 +1,5 @@
 import { Schema, model } from "mongoose";
-
-interface Place {
-  name: String;
-  mountainLocation: String;
-  altitudeInMeters: Number;
-  city?: String;
-  picture?: String;
-}
+import Place from "../../interfaces/place";
 
 const placeSchema = new Schema<Place>({
   name: { type: String, required: true, unique: true },
