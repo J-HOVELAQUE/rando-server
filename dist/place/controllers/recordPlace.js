@@ -12,12 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const PlaceModel_1 = __importDefault(require("../model/PlaceModel"));
 const joi_1 = __importDefault(require("joi"));
 const jimp_1 = __importDefault(require("jimp"));
 const cloudinary_1 = require("cloudinary");
 const promises_1 = require("fs/promises");
+const buildPlaceRepository_1 = __importDefault(require("../repository/buildPlaceRepository"));
 const cloudinary = cloudinary_1.v2;
+const placeRepository = buildPlaceRepository_1.default();
 cloudinary.config({
     cloud_name: "dhov1sjr7",
     api_key: "157842163261796",
@@ -78,12 +79,9 @@ function default_1(req, res) {
             payload.picture = yield savePictureInCLoudinary(req.files, payload.name);
         }
         ///// Rec in database
-        try {
-            const newPlace = new PlaceModel_1.default(payload);
-            yield newPlace.save();
-        }
-        catch (error) {
-            if (error.code && error.code === 11000) {
+        const saveResult = yield placeRepository.create(payload);
+        if (saveResult.outcome === "FAILURE") {
+            if (saveResult.errorCode === "UNIQUE_CONSTRAIN_ERROR") {
                 res.status(409).json({
                     error: "uniqueIndexError",
                     message: "a place with this name already existing",
@@ -92,11 +90,14 @@ function default_1(req, res) {
             }
             res.status(503).json({
                 error: "databaseError",
-                details: error,
+                details: saveResult.detail,
             });
             return;
         }
-        res.status(201).json({ message: `place ${payload.name} recorded` });
+        res.status(201).json({
+            message: `place ${payload.name} recorded`,
+            place: saveResult.data,
+        });
     });
 }
 exports.default = default_1;

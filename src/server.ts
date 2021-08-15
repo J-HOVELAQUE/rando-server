@@ -8,14 +8,17 @@ import placeRouter from "./place/router/index";
 import config from "config";
 import fileUpload from "express-fileupload";
 
-// const express = require("express");
 const ALLOWED_ORIGIN: string = config.get("allowedOrigin");
+
+export interface RequestWithDeps extends Request {
+  deps: any;
+}
 
 interface Server {
   start: () => void;
 }
 
-export default function buildServer(): Server {
+export default function buildServer(deps: any): Server {
   const app = express();
   const server = http.createServer(app);
 
@@ -38,6 +41,12 @@ export default function buildServer(): Server {
     );
     next();
   });
+
+  // Binding dependencies //
+  // app.use(function (req, res, next) {
+  //   req.dependencies = deps;
+  //   next()
+  // })
 
   // Routers
   app.use("/hike", hikeRouter);

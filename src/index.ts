@@ -1,6 +1,7 @@
 import server from "./server";
 import mongoose, { Mongoose } from "mongoose";
 import config from "config";
+import initRepository from "./initRepository";
 
 const uriConnection: string = config.get("mongodb.uriConnection");
 
@@ -9,10 +10,6 @@ const option = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
-
-const app = server();
-
-app.start();
 
 async function createConnection(): Promise<Mongoose> {
   try {
@@ -26,3 +23,9 @@ async function createConnection(): Promise<Mongoose> {
 }
 
 createConnection();
+
+const { placeRepository } = initRepository();
+
+const app = server(initRepository());
+
+app.start();

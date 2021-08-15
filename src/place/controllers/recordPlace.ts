@@ -5,8 +5,10 @@ import Jimp from "jimp";
 import { UploadedFile, FileArray } from "express-fileupload";
 import { v2 } from "cloudinary";
 import { unlink } from "fs/promises";
+import buildPlaceRepository from "../repository/buildPlaceRepository";
 
 const cloudinary = v2;
+const placeRepository = buildPlaceRepository();
 
 interface Place {
   name: string;
@@ -94,11 +96,10 @@ export default async function (req: Request, res: Response) {
   }
 
   ///// Rec in database
-  try {
-    const newPlace = new PlaceModel(payload);
-    await newPlace.save();
-  } catch (error) {
-    if (error.code && error.code === 11000) {
+  const saveResult = await placeRepository.create(payload);
+
+  if (saveResult.outcome === "FAILURE") {
+    if (saveResult.errorCode === "UNIQUE_CONSTRAIN_ERROR") {
       res.status(409).json({
         error: "uniqueIndexError",
         message: "a place with this name already existing",
@@ -107,10 +108,13 @@ export default async function (req: Request, res: Response) {
     }
     res.status(503).json({
       error: "databaseError",
-      details: error,
+      details: saveResult.detail,
     });
     return;
   }
 
-  res.status(201).json({ message: `place ${payload.name} recorded` });
+  res.status(201).json({
+    message: `place ${payload.name} recorded`,
+    place: saveResult.data,
+  });
 }

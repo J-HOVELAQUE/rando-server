@@ -15,14 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const server_1 = __importDefault(require("./server"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = __importDefault(require("config"));
+const initRepository_1 = __importDefault(require("./initRepository"));
 const uriConnection = config_1.default.get("mongodb.uriConnection");
 const option = {
     connectTimeoutMS: 5000,
     useNewUrlParser: true,
     useUnifiedTopology: true,
 };
-const app = server_1.default();
-app.start();
 function createConnection() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -37,3 +36,6 @@ function createConnection() {
     });
 }
 createConnection();
+const { placeRepository } = initRepository_1.default();
+const app = server_1.default(initRepository_1.default());
+app.start();

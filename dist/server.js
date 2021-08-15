@@ -11,9 +11,8 @@ const index_1 = __importDefault(require("./user/router/index"));
 const index_2 = __importDefault(require("./place/router/index"));
 const config_1 = __importDefault(require("config"));
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
-// const express = require("express");
 const ALLOWED_ORIGIN = config_1.default.get("allowedOrigin");
-function buildServer() {
+function buildServer(deps) {
     const app = express_1.default();
     const server = http_1.default.createServer(app);
     // Middlewares
@@ -28,6 +27,11 @@ function buildServer() {
         res.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, DELETE, OPTIONS, PUT");
         next();
     });
+    // Binding dependencies //
+    // app.use(function (req, res, next) {
+    //   req.dependencies = deps;
+    //   next()
+    // })
     // Routers
     app.use("/hike", router_1.default);
     app.use("/user", index_1.default);
