@@ -12,12 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUser = void 0;
-const UserModel_1 = __importDefault(require("../model/UserModel"));
+const buildUserRepository_1 = __importDefault(require("../repository/buildUserRepository"));
+const userRepository = buildUserRepository_1.default();
 function getUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const users = yield UserModel_1.default.find();
-        res.json(users);
+        const getUserResult = yield userRepository.findAll();
+        if (getUserResult.outcome === "FAILURE") {
+            res.status(503).json({
+                error: "databaseError",
+                details: getUserResult.detail,
+            });
+            return;
+        }
+        res.status(200).json({
+            message: `there is ${getUserResult.data.length} users in database`,
+            places: getUserResult.data,
+        });
     });
 }
-exports.getUser = getUser;
+exports.default = getUser;
