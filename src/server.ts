@@ -43,8 +43,8 @@ export default function buildServer(deps: any): Server {
   });
 
   // Binding dependencies //
-  // app.use(function (req, res, next) {
-  //   req.dependencies = deps;
+  // app.use(function (req: RequestWithDeps, res, next) {
+  //   req.deps = deps;
   //   next()
   // })
 
