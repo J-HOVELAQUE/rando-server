@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
+import Hike from "../../interfaces/hike";
 
-const hikeSchema = new mongoose.Schema({
+const hikeSchema = new Schema<Hike>({
   durationInMinutes: Number,
   elevationInMeters: Number,
   distanceInMeters: Number,
@@ -10,16 +11,16 @@ const hikeSchema = new mongoose.Schema({
   date: Date,
   participants: [
     {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Users",
     },
   ],
   place: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "Places",
   },
 });
 
-const HikeModel = mongoose.model("Hikes", hikeSchema);
+const HikeModel = model<Hike>("Hikes", hikeSchema);
 
 export default HikeModel;

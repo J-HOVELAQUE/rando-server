@@ -1,10 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const hikeSchema = new mongoose_1.default.Schema({
+const mongoose_1 = require("mongoose");
+const hikeSchema = new mongoose_1.Schema({
     durationInMinutes: Number,
     elevationInMeters: Number,
     distanceInMeters: Number,
@@ -14,14 +11,14 @@ const hikeSchema = new mongoose_1.default.Schema({
     date: Date,
     participants: [
         {
-            type: mongoose_1.default.Schema.Types.ObjectId,
+            type: mongoose_1.Schema.Types.ObjectId,
             ref: "Users",
         },
     ],
     place: {
-        type: mongoose_1.default.Schema.Types.ObjectId,
+        type: mongoose_1.Schema.Types.ObjectId,
         ref: "Places",
     },
 });
-const HikeModel = mongoose_1.default.model("Hikes", hikeSchema);
+const HikeModel = mongoose_1.model("Hikes", hikeSchema);
 exports.default = HikeModel;
