@@ -29,6 +29,9 @@ const hikeRepository = buildHikeRepository_1.default();
 function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const payload = req.body;
+        if (!Array.isArray(payload.participants)) {
+            payload.participants = [payload.participants];
+        }
         //// Payload validation
         try {
             joi_1.default.assert(payload, hikeSchema, {
@@ -43,7 +46,20 @@ function default_1(req, res) {
                 details: errorMessages,
             });
         }
-        res.json({ message: "recorded" });
+        //// Rec in database
+        const saveResult = yield hikeRepository.create(payload);
+        if (saveResult.outcome === "FAILURE") {
+            res.status(503).json({
+                error: "databaseError",
+                errorCode: saveResult.errorCode,
+                details: saveResult.detail,
+            });
+            return;
+        }
+        res.status(201).json({
+            message: `hike recorded`,
+            place: saveResult.data,
+        });
     });
 }
 exports.default = default_1;

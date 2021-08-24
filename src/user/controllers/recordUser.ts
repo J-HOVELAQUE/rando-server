@@ -45,6 +45,7 @@ export default async function (req: Request, res: Response) {
     }
     res.status(503).json({
       error: "databaseError",
+      errorCode: saveResult.errorCode,
       details: saveResult.detail,
     });
     return;

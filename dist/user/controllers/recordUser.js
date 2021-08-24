@@ -51,6 +51,7 @@ function default_1(req, res) {
             }
             res.status(503).json({
                 error: "databaseError",
+                errorCode: saveResult.errorCode,
                 details: saveResult.detail,
             });
             return;

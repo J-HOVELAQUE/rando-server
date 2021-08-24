@@ -1,4 +1,6 @@
 import HikeModel from "../model/HikeModel";
+import PlaceModel from "../../place/model/PlaceModel";
+import UserModel from "../../user/model/UserModel";
 import Hike from "../../interfaces/hike";
 import { OutcomeSuccess, OutcomeFailure } from "../../interfaces/outcomes";
 
@@ -29,6 +31,23 @@ export default function buildHikeRepository(): HikeRepository {
 
     create: async (hikeToCreate: Hike) => {
       try {
+        const placeValidation = await PlaceModel.findById(hikeToCreate.place);
+
+        if (!placeValidation) {
+          return {
+            outcome: "FAILURE",
+            errorCode: "FOREIGN_KEY_ERROR",
+            detail: "The place doesn't exist",
+          };
+        }
+
+        for (const user of hikeToCreate.participants) {
+          const participantValidation = await UserModel.findById(user);
+          if (!participantValidation) {
+            throw new Error("USER_ERROR");
+          }
+        }
+
         const newHike = new HikeModel(hikeToCreate);
         const dbAnswer = await newHike.save();
         return {
@@ -37,8 +56,18 @@ export default function buildHikeRepository(): HikeRepository {
         };
       } catch (error) {
         let errorCode: string = "DATABASE_ERROR";
+
         if (error.code && error.code === 11000) {
           errorCode = "UNIQUE_CONSTRAIN_ERROR";
+        }
+
+        if (error.message === "USER_ERROR") {
+          return {
+            outcome: "FAILURE",
+            errorCode: "UNIQUE_CONSTRAIN_ERROR",
+            reason: "One or more user doesn't exist",
+            detail: error,
+          };
         }
         return {
           outcome: "FAILURE",

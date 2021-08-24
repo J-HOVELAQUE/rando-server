@@ -13,6 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const HikeModel_1 = __importDefault(require("../model/HikeModel"));
+const PlaceModel_1 = __importDefault(require("../../place/model/PlaceModel"));
+const UserModel_1 = __importDefault(require("../../user/model/UserModel"));
 function buildHikeRepository() {
     return {
         findAll: () => __awaiter(this, void 0, void 0, function* () {
@@ -33,6 +35,20 @@ function buildHikeRepository() {
         }),
         create: (hikeToCreate) => __awaiter(this, void 0, void 0, function* () {
             try {
+                const placeValidation = yield PlaceModel_1.default.findById(hikeToCreate.place);
+                if (!placeValidation) {
+                    return {
+                        outcome: "FAILURE",
+                        errorCode: "FOREIGN_KEY_ERROR",
+                        detail: "The place doesn't exist",
+                    };
+                }
+                for (const user of hikeToCreate.participants) {
+                    const participantValidation = yield UserModel_1.default.findById(user);
+                    if (!participantValidation) {
+                        throw new Error("USER_ERROR");
+                    }
+                }
                 const newHike = new HikeModel_1.default(hikeToCreate);
                 const dbAnswer = yield newHike.save();
                 return {
@@ -44,6 +60,14 @@ function buildHikeRepository() {
                 let errorCode = "DATABASE_ERROR";
                 if (error.code && error.code === 11000) {
                     errorCode = "UNIQUE_CONSTRAIN_ERROR";
+                }
+                if (error.message === "USER_ERROR") {
+                    return {
+                        outcome: "FAILURE",
+                        errorCode: "UNIQUE_CONSTRAIN_ERROR",
+                        reason: "One or more user doesn't exist",
+                        detail: error,
+                    };
                 }
                 return {
                     outcome: "FAILURE",
