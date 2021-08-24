@@ -17,7 +17,7 @@ const userRepository = buildUserRepository();
 export default async function (req: Request, res: Response) {
   // const newUser = new UserModel(req.body);
   const payload: User = req.body;
-  // console.log(">>>>>>>>", req.body);
+  console.log(">>>>>>>>", req.body);
 
   // await newUser.save();
 
