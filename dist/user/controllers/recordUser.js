@@ -24,10 +24,7 @@ const userSchema = joi_1.default.object({
 const userRepository = buildUserRepository_1.default();
 function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        // const newUser = new UserModel(req.body);
         const payload = req.body;
-        console.log(">>>>>>>>", req.body);
-        // await newUser.save();
         //// Payload validation
         try {
             joi_1.default.assert(payload, userSchema, {

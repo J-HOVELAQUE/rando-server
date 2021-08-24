@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import UserModel from "../model/UserModel";
 import Joi, { ValidationError } from "joi";
 import buildUserRepository from "../repository/buildUserRepository";
 import User from "../../interfaces/user";
@@ -15,11 +14,7 @@ const userSchema = Joi.object({
 const userRepository = buildUserRepository();
 
 export default async function (req: Request, res: Response) {
-  // const newUser = new UserModel(req.body);
   const payload: User = req.body;
-  console.log(">>>>>>>>", req.body);
-
-  // await newUser.save();
 
   //// Payload validation
   try {

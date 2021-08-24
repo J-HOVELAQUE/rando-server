@@ -12,11 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const HikeModel_1 = __importDefault(require("../model/HikeModel"));
+const buildHikeRepository_1 = __importDefault(require("../repository/buildHikeRepository"));
+const hikeRepository = buildHikeRepository_1.default();
 function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const hikesInDatabase = yield HikeModel_1.default.find();
-        res.json(hikesInDatabase);
+        const getHikesResult = yield hikeRepository.findAll();
+        if (getHikesResult.outcome === "FAILURE") {
+            res.status(503).json({
+                error: "databaseError",
+                details: getHikesResult.detail,
+            });
+            return;
+        }
+        res.status(200).json({
+            message: `there is ${getHikesResult.data.length} hikes in database`,
+            places: getHikesResult.data,
+        });
     });
 }
 exports.default = default_1;
