@@ -2,9 +2,7 @@ import HikeModel from "../model/HikeModel";
 import PlaceModel from "../../place/model/PlaceModel";
 import UserModel from "../../user/model/UserModel";
 import Hike from "../../interfaces/hike";
-import Place from "../../interfaces/place";
 import { OutcomeSuccess, OutcomeFailure } from "../../interfaces/outcomes";
-import mongoose, { ObjectId } from "mongoose";
 
 type ResultRepoMethod<data> = OutcomeSuccess<data> | OutcomeFailure;
 
@@ -12,6 +10,7 @@ interface HikeRepository {
   create: (hikeToCreate: Hike) => Promise<ResultRepoMethod<Hike>>;
   findAll: () => Promise<ResultRepoMethod<Hike[]>>;
   findByPlace: (placeId: string) => Promise<ResultRepoMethod<Hike[]>>;
+  findById: (hikeId: string) => Promise<ResultRepoMethod<Hike>>;
 }
 
 export default function buildHikeRepository(): HikeRepository {
@@ -22,6 +21,29 @@ export default function buildHikeRepository(): HikeRepository {
         return {
           outcome: "SUCCESS",
           data: hikesInDatabase,
+        };
+      } catch (error) {
+        return {
+          outcome: "FAILURE",
+          errorCode: "DATABASE_ERROR",
+          detail: error,
+        };
+      }
+    },
+
+    findById: async (hikeId: string) => {
+      try {
+        const hikeForThisId: Hike | null = await HikeModel.findById(hikeId);
+        if (hikeForThisId === null) {
+          return {
+            outcome: "FAILURE",
+            errorCode: "NO_HIKE",
+            detail: "there is no hike for this id",
+          };
+        }
+        return {
+          outcome: "SUCCESS",
+          data: hikeForThisId,
         };
       } catch (error) {
         return {

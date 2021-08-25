@@ -33,6 +33,29 @@ function buildHikeRepository() {
                 };
             }
         }),
+        findById: (hikeId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const hikeForThisId = yield HikeModel_1.default.findById(hikeId);
+                if (hikeForThisId === null) {
+                    return {
+                        outcome: "FAILURE",
+                        errorCode: "NO_HIKE",
+                        detail: "there is no hike for this id",
+                    };
+                }
+                return {
+                    outcome: "SUCCESS",
+                    data: hikeForThisId,
+                };
+            }
+            catch (error) {
+                return {
+                    outcome: "FAILURE",
+                    errorCode: "DATABASE_ERROR",
+                    detail: error,
+                };
+            }
+        }),
         findByPlace: (placeId) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const hikesInDatabase = yield HikeModel_1.default.find({

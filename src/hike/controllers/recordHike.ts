@@ -39,6 +39,7 @@ export default async function (req: Request, res: Response) {
       error: "payloadError",
       details: errorMessages,
     });
+    return;
   }
 
   //// Rec in database

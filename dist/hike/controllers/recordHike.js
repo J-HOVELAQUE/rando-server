@@ -45,6 +45,7 @@ function default_1(req, res) {
                 error: "payloadError",
                 details: errorMessages,
             });
+            return;
         }
         //// Rec in database
         const saveResult = yield hikeRepository.create(payload);
