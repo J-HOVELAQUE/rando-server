@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const http_1 = __importDefault(require("http"));
 const morgan_1 = __importDefault(require("morgan"));
-const router_1 = __importDefault(require("./hike/router"));
-const index_1 = __importDefault(require("./user/router/index"));
-const index_2 = __importDefault(require("./place/router/index"));
+const index_1 = __importDefault(require("./hike/router/index"));
+const index_2 = __importDefault(require("./user/router/index"));
+const index_3 = __importDefault(require("./place/router/index"));
 const config_1 = __importDefault(require("config"));
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const ALLOWED_ORIGIN = config_1.default.get("allowedOrigin");
@@ -33,9 +33,9 @@ function buildServer(deps) {
     //   next()
     // })
     // Routers
-    app.use("/hike", router_1.default);
-    app.use("/user", index_1.default);
-    app.use("/place", index_2.default);
+    app.use("/hike", index_1.default);
+    app.use("/user", index_2.default);
+    app.use("/place", index_3.default);
     return {
         start: () => {
             server.listen(3000, () => {

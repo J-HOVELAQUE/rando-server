@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import express from "express";
 import http from "http";
 import morgan from "morgan";
-import hikeRouter from "./hike/router";
+import hikeRouter from "./hike/router/index";
 import userRouter from "./user/router/index";
 import placeRouter from "./place/router/index";
 import config from "config";

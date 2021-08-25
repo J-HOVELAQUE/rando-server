@@ -2,20 +2,42 @@ import HikeModel from "../model/HikeModel";
 import PlaceModel from "../../place/model/PlaceModel";
 import UserModel from "../../user/model/UserModel";
 import Hike from "../../interfaces/hike";
+import Place from "../../interfaces/place";
 import { OutcomeSuccess, OutcomeFailure } from "../../interfaces/outcomes";
+import mongoose, { ObjectId } from "mongoose";
 
 type ResultRepoMethod<data> = OutcomeSuccess<data> | OutcomeFailure;
 
 interface HikeRepository {
   create: (hikeToCreate: Hike) => Promise<ResultRepoMethod<Hike>>;
   findAll: () => Promise<ResultRepoMethod<Hike[]>>;
+  findByPlace: (placeId: string) => Promise<ResultRepoMethod<Hike[]>>;
 }
 
 export default function buildHikeRepository(): HikeRepository {
   return {
     findAll: async () => {
       try {
-        const hikesInDatabase = await HikeModel.find();
+        const hikesInDatabase: Hike[] = await HikeModel.find();
+        return {
+          outcome: "SUCCESS",
+          data: hikesInDatabase,
+        };
+      } catch (error) {
+        return {
+          outcome: "FAILURE",
+          errorCode: "DATABASE_ERROR",
+          detail: error,
+        };
+      }
+    },
+
+    findByPlace: async (placeId: string) => {
+      try {
+        const hikesInDatabase: Hike[] = await HikeModel.find({
+          place: placeId,
+        });
+
         return {
           outcome: "SUCCESS",
           data: hikesInDatabase,

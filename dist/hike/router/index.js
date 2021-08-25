@@ -6,8 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const recordHike_1 = __importDefault(require("../controllers/recordHike"));
 const getHike_1 = __importDefault(require("../controllers/getHike"));
+const getHikeByPlace_1 = __importDefault(require("../controllers/getHikeByPlace"));
 const hikeRouter = express_1.default.Router();
 hikeRouter.get("/", getHike_1.default);
+hikeRouter.get("/:placeId", getHikeByPlace_1.default);
 hikeRouter.post("/", recordHike_1.default);
 hikeRouter.put("/", (req, res) => {
     res.json({

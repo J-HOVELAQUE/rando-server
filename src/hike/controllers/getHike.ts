@@ -1,10 +1,8 @@
-import HikeModel from "../model/HikeModel";
 import { Request, Response } from "express";
 import buildHikeRepository from "../repository/buildHikeRepository";
 
-const hikeRepository = buildHikeRepository();
-
 export default async function (req: Request, res: Response) {
+  const hikeRepository = buildHikeRepository();
   const getHikesResult = await hikeRepository.findAll();
 
   if (getHikesResult.outcome === "FAILURE") {

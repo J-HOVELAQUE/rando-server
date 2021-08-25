@@ -13,21 +13,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const buildHikeRepository_1 = __importDefault(require("../repository/buildHikeRepository"));
-function default_1(req, res) {
+function getHikeByPlace(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const hikeRepository = buildHikeRepository_1.default();
-        const getHikesResult = yield hikeRepository.findAll();
-        if (getHikesResult.outcome === "FAILURE") {
+        const hikesToFindResult = yield hikeRepository.findByPlace(req.params.placeId);
+        if (hikesToFindResult.outcome === "FAILURE") {
             res.status(503).json({
                 error: "databaseError",
-                details: getHikesResult.detail,
+                details: hikesToFindResult.detail,
             });
             return;
         }
-        res.status(200).json({
-            message: `there is ${getHikesResult.data.length} hikes in database`,
-            places: getHikesResult.data,
+        res.json({
+            message: `there is ${hikesToFindResult.data.length} hikes in database for this place`,
+            hikes: hikesToFindResult.data,
         });
     });
 }
-exports.default = default_1;
+exports.default = getHikeByPlace;

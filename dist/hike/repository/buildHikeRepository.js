@@ -33,6 +33,24 @@ function buildHikeRepository() {
                 };
             }
         }),
+        findByPlace: (placeId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const hikesInDatabase = yield HikeModel_1.default.find({
+                    place: placeId,
+                });
+                return {
+                    outcome: "SUCCESS",
+                    data: hikesInDatabase,
+                };
+            }
+            catch (error) {
+                return {
+                    outcome: "FAILURE",
+                    errorCode: "DATABASE_ERROR",
+                    detail: error,
+                };
+            }
+        }),
         create: (hikeToCreate) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const placeValidation = yield PlaceModel_1.default.findById(hikeToCreate.place);

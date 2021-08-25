@@ -1,10 +1,13 @@
 import express, { Request, Response } from "express";
 import recordHike from "../controllers/recordHike";
 import getHike from "../controllers/getHike";
+import getHikeByPlace from "../controllers/getHikeByPlace";
 
 const hikeRouter = express.Router();
 
 hikeRouter.get("/", getHike);
+
+hikeRouter.get("/:placeId", getHikeByPlace);
 
 hikeRouter.post("/", recordHike);
 

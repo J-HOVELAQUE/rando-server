@@ -1,7 +1,9 @@
 import User from "./user";
 import Place from "./place";
+import mongoose from "mongoose";
 
 export default interface Hike {
+  _id: string;
   durationInMinutes: Number;
   elevationInMeters: Number;
   distanceInMeters: Number;
@@ -10,5 +12,5 @@ export default interface Hike {
   description: String;
   date: Date;
   participants: User[];
-  place: Place;
+  place: mongoose.Types.ObjectId;
 }
