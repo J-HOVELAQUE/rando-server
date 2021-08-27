@@ -35,7 +35,9 @@ function buildHikeRepository() {
         }),
         findById: (hikeId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const hikeForThisId = yield HikeModel_1.default.findById(hikeId);
+                const hikeForThisId = yield HikeModel_1.default.findById(hikeId)
+                    .populate("participants")
+                    .exec();
                 if (hikeForThisId === null) {
                     return {
                         outcome: "FAILURE",
@@ -43,6 +45,7 @@ function buildHikeRepository() {
                         detail: "there is no hike for this id",
                     };
                 }
+                const formatedParticipant = hikeForThisId.participants.map((participant) => `${participant.firstname} ${participant.name}`);
                 return {
                     outcome: "SUCCESS",
                     data: hikeForThisId,

@@ -33,7 +33,9 @@ export default function buildHikeRepository(): HikeRepository {
 
     findById: async (hikeId: string) => {
       try {
-        const hikeForThisId: Hike | null = await HikeModel.findById(hikeId);
+        const hikeForThisId: Hike | null = await HikeModel.findById(hikeId)
+          .populate("participants")
+          .exec();
         if (hikeForThisId === null) {
           return {
             outcome: "FAILURE",
@@ -41,6 +43,11 @@ export default function buildHikeRepository(): HikeRepository {
             detail: "there is no hike for this id",
           };
         }
+
+        const formatedParticipant = hikeForThisId.participants.map(
+          (participant) => `${participant.firstname} ${participant.name}`
+        );
+
         return {
           outcome: "SUCCESS",
           data: hikeForThisId,
