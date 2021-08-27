@@ -26,7 +26,7 @@ function createConnection() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const connection = mongoose_1.default.connect(uriConnection, option);
-            console.log(`*** Database connection to  created ***`);
+            console.log(`*** Database connection to ${uriConnection} created ***`);
             return connection;
         }
         catch (err) {

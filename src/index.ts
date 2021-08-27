@@ -14,7 +14,7 @@ const option = {
 async function createConnection(): Promise<Mongoose> {
   try {
     const connection = mongoose.connect(uriConnection, option);
-    console.log(`*** Database connection to  created ***`);
+    console.log(`*** Database connection to ${uriConnection} created ***`);
     return connection;
   } catch (err) {
     console.log("ERROR during database connection", err);
