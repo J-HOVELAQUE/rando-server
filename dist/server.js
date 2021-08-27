@@ -12,6 +12,7 @@ const index_3 = __importDefault(require("./place/router/index"));
 const config_1 = __importDefault(require("config"));
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const ALLOWED_ORIGIN = config_1.default.get("allowedOrigin");
+const port = config_1.default.get("port");
 function buildServer(deps) {
     const app = express_1.default();
     const server = http_1.default.createServer(app);
@@ -38,8 +39,8 @@ function buildServer(deps) {
     app.use("/place", index_3.default);
     return {
         start: () => {
-            server.listen(3000, () => {
-                console.log("Server listen on port 3000");
+            server.listen(port, () => {
+                console.log(`Server listen on port ${port}`);
             });
         },
     };

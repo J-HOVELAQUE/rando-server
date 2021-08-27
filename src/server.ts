@@ -9,6 +9,7 @@ import config from "config";
 import fileUpload from "express-fileupload";
 
 const ALLOWED_ORIGIN: string = config.get("allowedOrigin");
+const port: number = config.get("port");
 
 export interface RequestWithDeps extends Request {
   deps: any;
@@ -55,8 +56,8 @@ export default function buildServer(deps: any): Server {
 
   return {
     start: () => {
-      server.listen(3000, () => {
-        console.log("Server listen on port 3000");
+      server.listen(port, () => {
+        console.log(`Server listen on port ${port}`);
       });
     },
   };
