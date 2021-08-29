@@ -1,6 +1,6 @@
 import createConnection from "../../createDatabaseConnection";
-import buildServer, { Server } from "../../server";
-import { Mongoose, AnyObject } from "mongoose";
+import buildServer from "../../server";
+import { Mongoose } from "mongoose";
 import PlaceModel from "../model/PlaceModel";
 import supertest from "supertest";
 

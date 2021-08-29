@@ -60,7 +60,6 @@ function uploadImageFromFileArray(files, placeName) {
             };
         }
         catch (error) {
-            console.log("EEERRRROR", error);
             return {
                 outcome: "FAILURE",
                 errorCode: "CLOUDINARY_ERROR",

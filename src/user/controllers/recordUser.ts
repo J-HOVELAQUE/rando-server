@@ -6,7 +6,9 @@ import User from "../../interfaces/user";
 const userSchema = Joi.object({
   name: Joi.string().required(),
   firstname: Joi.string().required(),
-  email: Joi.string().required(),
+  email: Joi.string()
+    .required()
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "fr"] } }),
   dateOfBirth: Joi.date(),
   photo: Joi.string(),
 });
@@ -30,6 +32,7 @@ export default async function (req: Request, res: Response) {
       error: "payloadError",
       details: errorMessages,
     });
+    return;
   }
 
   //// Rec in database
@@ -43,6 +46,7 @@ export default async function (req: Request, res: Response) {
       });
       return;
     }
+
     res.status(503).json({
       error: "databaseError",
       errorCode: saveResult.errorCode,

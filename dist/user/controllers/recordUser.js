@@ -17,7 +17,9 @@ const buildUserRepository_1 = __importDefault(require("../repository/buildUserRe
 const userSchema = joi_1.default.object({
     name: joi_1.default.string().required(),
     firstname: joi_1.default.string().required(),
-    email: joi_1.default.string().required(),
+    email: joi_1.default.string()
+        .required()
+        .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "fr"] } }),
     dateOfBirth: joi_1.default.date(),
     photo: joi_1.default.string(),
 });
