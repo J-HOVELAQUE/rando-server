@@ -13,48 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const joi_1 = __importDefault(require("joi"));
-const jimp_1 = __importDefault(require("jimp"));
-const cloudinary_1 = require("cloudinary");
-const promises_1 = require("fs/promises");
 const buildPlaceRepository_1 = __importDefault(require("../repository/buildPlaceRepository"));
-const cloudinary = cloudinary_1.v2;
+const uploadImageFromFileArray_1 = __importDefault(require("../../services/uploadImage/uploadImageFromFileArray"));
 const placeRepository = buildPlaceRepository_1.default();
-cloudinary.config({
-    cloud_name: "dhov1sjr7",
-    api_key: "157842163261796",
-    api_secret: "MX3FORXNb-9duMrGfsI3RdJvvyg",
-    secure: true,
-});
 const placeSchema = joi_1.default.object({
     name: joi_1.default.string().required(),
     mountainLocation: joi_1.default.string().required(),
     altitudeInMeters: joi_1.default.number().integer().required(),
     city: joi_1.default.string(),
 });
-function savePictureInCLoudinary(files, namePlace) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let pictureUrl = "";
-        for (const fileName in files) {
-            const newFile = files[fileName];
-            if (Array.isArray(newFile)) {
-                newFile.forEach((file) => {
-                    file.mv("./tmp/avatar.jpg");
-                });
-                return "OK";
-            }
-            const tempPicturePath = "./tmp/" + newFile.name;
-            const uploadedPicture = yield jimp_1.default.read(newFile.data);
-            uploadedPicture.resize(600, jimp_1.default.AUTO);
-            const savedResizedPicture = yield uploadedPicture.writeAsync(tempPicturePath);
-            const resultCloudinary = yield cloudinary.uploader.upload(`./tmp/${newFile.name}`, {
-                public_id: "rando/places/" + namePlace,
-            });
-            pictureUrl = resultCloudinary.url;
-            promises_1.unlink(tempPicturePath);
-        }
-        return pictureUrl;
-    });
-}
 function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const payload = req.body;
@@ -75,7 +42,16 @@ function default_1(req, res) {
         }
         ///// Rec picture
         if (req.files !== undefined) {
-            payload.picture = yield savePictureInCLoudinary(req.files, payload.name);
+            const uploadResult = yield uploadImageFromFileArray_1.default(req.files, payload.name);
+            if (uploadResult.outcome === "FAILURE") {
+                res.status(400).json({
+                    error: "payloadError",
+                    errorCode: uploadResult.errorCode,
+                    detail: uploadResult.detail,
+                });
+                return;
+            }
+            payload.picture = uploadResult.data;
         }
         ///// Rec in database
         const saveResult = yield placeRepository.create(payload);
