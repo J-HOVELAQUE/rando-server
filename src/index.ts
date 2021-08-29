@@ -4,8 +4,6 @@ import config from "config";
 
 const port: number = config.get("port");
 
-console.log("Environment", process.env.NODE_ENV);
-
 createConnection();
 
 const app = server();

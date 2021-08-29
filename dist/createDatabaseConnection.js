@@ -14,7 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = __importDefault(require("config"));
-const uriConnection = config_1.default.get("mongodb.uriConnection");
+let uriConnection;
+if (process.env.NODE_ENV === "dev" || process.env.NODE_ENV === "test") {
+    uriConnection = config_1.default.get("mongodb.uriConnection");
+}
+else {
+    uriConnection = "";
+}
 const option = {
     connectTimeoutMS: 5000,
     useNewUrlParser: true,

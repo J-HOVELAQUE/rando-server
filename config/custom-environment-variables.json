@@ -1,7 +1,11 @@
 {
   "mongodb": {
-    "uriConnection": "MONGO_URI"
+    "uriConnection": "MONGO_URI",
+    "user": "DB_USER",
+    "password": "DB_PASSWORD",
+    "dbName": "DB_NAME"
   },
   "allowedOrigin": "ALLOWED_ORIGIN",
-  "port": "PORT"
+  "port": "PORT",
+  "environment": "ENVIRONMENT"
 }

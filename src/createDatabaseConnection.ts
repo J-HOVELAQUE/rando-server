@@ -1,8 +1,6 @@
 import mongoose, { Mongoose } from "mongoose";
 import config from "config";
 
-const uriConnection: string = config.get("mongodb.uriConnection");
-
 const option = {
   connectTimeoutMS: 5000,
   useNewUrlParser: true,
@@ -10,6 +8,17 @@ const option = {
 };
 
 export default async function createConnection(): Promise<Mongoose> {
+  let uriConnection: string = config.get("mongodb.uriConnection");
+
+  if (config.get("environment") === "prod") {
+    console.log(">>>>>>>>>>>>>>>>>>>AHAHAHAHA");
+
+    uriConnection = `mongodb+srv://${config.get("mongodb.user")}:${config.get(
+      "mongodb.password"
+    )}@lacapsule.fd7ap.mongodb.net/${config.get(
+      "mongodb.dbName"
+    )}?retryWrites=true&w=majority`;
+  }
   try {
     const connection = mongoose.connect(uriConnection, option);
     console.log(`*** Database connection to ${uriConnection} created ***`);

@@ -1,7 +1,11 @@
 {
   "mongodb": {
-    "uriConnection": "mongodb://localhost:27017/rando_dev"
+    "uriConnection": "mongodb://localhost:27017/rando_dev",
+    "user": "",
+    "password": "",
+    "dbName": ""
   },
-  "allowedOrigin": "*",
-  "port": 3000
+  "allowedOrigin": "",
+  "port": 3000,
+  "environment": "dev"
 }
