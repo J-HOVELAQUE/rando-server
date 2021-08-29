@@ -10,6 +10,8 @@ const option = {
 export default async function createConnection(): Promise<Mongoose> {
   let uriConnection: string = config.get("mongodb.uriConnection");
 
+  console.log(">>>ENVIRONMENT", config.get("environment"));
+
   if (config.get("environment") === "prod") {
     console.log(">>>>>>>>>>>>>>>>>>>AHAHAHAHA");
 
