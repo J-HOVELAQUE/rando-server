@@ -14,13 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = __importDefault(require("config"));
-let uriConnection;
-if (process.env.NODE_ENV === "dev" || process.env.NODE_ENV === "test") {
-    uriConnection = config_1.default.get("mongodb.uriConnection");
-}
-else {
-    uriConnection = "";
-}
 const option = {
     connectTimeoutMS: 5000,
     useNewUrlParser: true,
@@ -28,6 +21,12 @@ const option = {
 };
 function createConnection() {
     return __awaiter(this, void 0, void 0, function* () {
+        let uriConnection = config_1.default.get("mongodb.uriConnection");
+        console.log(">>>ENVIRONMENT", config_1.default.get("environment"));
+        if (config_1.default.get("environment") === "prod") {
+            console.log(">>>>>>>>>>>>>>>>>>>AHAHAHAHA");
+            uriConnection = `mongodb+srv://${config_1.default.get("mongodb.user")}:${config_1.default.get("mongodb.password")}@lacapsule.fd7ap.mongodb.net/${config_1.default.get("mongodb.dbName")}?retryWrites=true&w=majority`;
+        }
         try {
             const connection = mongoose_1.default.connect(uriConnection, option);
             console.log(`*** Database connection to ${uriConnection} created ***`);
