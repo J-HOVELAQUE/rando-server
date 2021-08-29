@@ -1,10 +1,5 @@
 import { Request, Response } from "express";
-import PlaceModel from "../model/PlaceModel";
 import Joi, { ValidationError } from "joi";
-import Jimp from "jimp";
-import { UploadedFile, FileArray } from "express-fileupload";
-import { v2 } from "cloudinary";
-import { unlink } from "fs/promises";
 import buildPlaceRepository from "../repository/buildPlaceRepository";
 import uploadImageFromFileArray from "../../services/uploadImage/uploadImageFromFileArray";
 

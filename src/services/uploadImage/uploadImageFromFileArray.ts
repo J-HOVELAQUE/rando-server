@@ -71,8 +71,6 @@ export default async function uploadImageFromFileArray(
       data: pictureUrl,
     };
   } catch (error) {
-    console.log("EEERRRROR", error);
-
     return {
       outcome: "FAILURE",
       errorCode: "CLOUDINARY_ERROR",
