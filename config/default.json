@@ -1,6 +1,6 @@
 {
   "mongodb": {
-    "uriConnection": ""
+    "uriConnection": "mongodb://localhost:27017/rando_dev"
   },
   "allowedOrigin": "*",
   "port": 3000

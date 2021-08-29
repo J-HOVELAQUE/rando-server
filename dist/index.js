@@ -7,6 +7,7 @@ const server_1 = __importDefault(require("./server"));
 const createDatabaseConnection_1 = __importDefault(require("./createDatabaseConnection"));
 const config_1 = __importDefault(require("config"));
 const port = config_1.default.get("port");
+console.log("Environment", process.env.NODE_ENV);
 createDatabaseConnection_1.default();
 const app = server_1.default();
 app.listen(port, () => {

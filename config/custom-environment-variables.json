@@ -2,6 +2,6 @@
   "mongodb": {
     "uriConnection": "MONGO_URI"
   },
-  "allowedOrigin": "*",
+  "allowedOrigin": "ALLOWED_ORIGIN",
   "port": "PORT"
 }
