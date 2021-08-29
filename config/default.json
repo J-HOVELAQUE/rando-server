@@ -5,6 +5,11 @@
     "password": "",
     "dbName": ""
   },
+  "cloudinary": {
+    "cloud_name": "",
+    "api_key": "",
+    "api_secret": ""
+  },
   "allowedOrigin": "",
   "port": 3000,
   "environment": "dev"
