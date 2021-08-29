@@ -50,15 +50,16 @@ describe("POST /place", () => {
                     },
                 });
                 const placeInDatabase = yield PlaceModel_1.default.find();
-                // expect(placeInDatabase).toEqual([
-                //   {
-                //     __v: 0,
-                //     _id: expect.anything(),
-                //     altitudeInMeters: 2030,
-                //     mountainLocation: "Chablais",
-                //     name: "Pointe de Chalune",
-                //   },
-                // ]);
+                const _id = placeInDatabase[0]._id.toString();
+                expect(placeInDatabase).toEqual([
+                    {
+                        __v: 0,
+                        _id: _id,
+                        altitudeInMeters: 2030,
+                        mountainLocation: "Chablais",
+                        name: "Pointe de Chalune",
+                    },
+                ]);
             }));
         });
     });

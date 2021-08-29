@@ -22,9 +22,7 @@ const option = {
 function createConnection() {
     return __awaiter(this, void 0, void 0, function* () {
         let uriConnection = config_1.default.get("mongodb.uriConnection");
-        console.log(">>>ENVIRONMENT", config_1.default.get("environment"));
         if (config_1.default.get("environment") === "prod") {
-            console.log(">>>>>>>>>>>>>>>>>>>AHAHAHAHA");
             uriConnection = `mongodb+srv://${config_1.default.get("mongodb.user")}:${config_1.default.get("mongodb.password")}@lacapsule.fd7ap.mongodb.net/${config_1.default.get("mongodb.dbName")}?retryWrites=true&w=majority`;
         }
         try {
