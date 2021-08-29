@@ -4,8 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const server_1 = __importDefault(require("./server"));
-const initRepository_1 = __importDefault(require("./initRepository"));
 const createDatabaseConnection_1 = __importDefault(require("./createDatabaseConnection"));
+const config_1 = __importDefault(require("config"));
+const port = config_1.default.get("port");
 createDatabaseConnection_1.default();
-const app = server_1.default(initRepository_1.default());
-app.start();
+const app = server_1.default();
+app.listen(port, () => {
+    console.log(`Server listen on port ${port}`);
+});

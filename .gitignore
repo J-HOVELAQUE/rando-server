@@ -1,1 +1,4 @@
 node_modules
+coverage
+config/dev.json
+config/test.json

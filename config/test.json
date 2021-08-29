@@ -1,6 +1,0 @@
-{
-  "mongodb": {
-    "uriConnection": "mongodb://localhost:27017/rando_test"
-  },
-  "port": 3000
-}

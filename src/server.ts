@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import express from "express";
+import express, { Express } from "express";
 import http from "http";
 import morgan from "morgan";
 import hikeRouter from "./hike/router/index";
@@ -11,15 +11,11 @@ import fileUpload from "express-fileupload";
 const ALLOWED_ORIGIN: string = config.get("allowedOrigin");
 const port: number = config.get("port");
 
-export interface RequestWithDeps extends Request {
-  deps: any;
-}
-
-interface Server {
+export interface Server extends Express {
   start: () => void;
 }
 
-export default function buildServer(deps: any): Server {
+export default function buildServer(): Express {
   const app = express();
   const server = http.createServer(app);
 
@@ -43,22 +39,10 @@ export default function buildServer(deps: any): Server {
     next();
   });
 
-  // Binding dependencies //
-  // app.use(function (req: RequestWithDeps, res, next) {
-  //   req.deps = deps;
-  //   next()
-  // })
-
   // Routers
   app.use("/hike", hikeRouter);
   app.use("/user", userRouter);
   app.use("/place", placeRouter);
 
-  return {
-    start: () => {
-      server.listen(port, () => {
-        console.log(`Server listen on port ${port}`);
-      });
-    },
-  };
+  return app;
 }

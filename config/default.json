@@ -1,7 +1,0 @@
-{
-  "mongodb": {
-    "uriConnection": ""
-  },
-  "allowedOrigin": "*",
-  "port": 3000
-}

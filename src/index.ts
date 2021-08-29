@@ -1,9 +1,13 @@
 import server from "./server";
-import initRepository from "./initRepository";
 import createConnection from "./createDatabaseConnection";
+import config from "config";
+
+const port: number = config.get("port");
 
 createConnection();
 
-const app = server(initRepository());
+const app = server();
 
-app.start();
+app.listen(port, () => {
+  console.log(`Server listen on port ${port}`);
+});

@@ -13,7 +13,7 @@ const config_1 = __importDefault(require("config"));
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const ALLOWED_ORIGIN = config_1.default.get("allowedOrigin");
 const port = config_1.default.get("port");
-function buildServer(deps) {
+function buildServer() {
     const app = express_1.default();
     const server = http_1.default.createServer(app);
     // Middlewares
@@ -28,21 +28,10 @@ function buildServer(deps) {
         res.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, DELETE, OPTIONS, PUT");
         next();
     });
-    // Binding dependencies //
-    // app.use(function (req: RequestWithDeps, res, next) {
-    //   req.deps = deps;
-    //   next()
-    // })
     // Routers
     app.use("/hike", index_1.default);
     app.use("/user", index_2.default);
     app.use("/place", index_3.default);
-    return {
-        start: () => {
-            server.listen(port, () => {
-                console.log(`Server listen on port ${port}`);
-            });
-        },
-    };
+    return app;
 }
 exports.default = buildServer;
