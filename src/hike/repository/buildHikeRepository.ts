@@ -1,7 +1,7 @@
 import HikeModel from "../model/HikeModel";
 import PlaceModel from "../../place/model/PlaceModel";
 import UserModel from "../../user/model/UserModel";
-import Hike from "../../interfaces/hike";
+import Hike, { PopulatedHike } from "../../interfaces/hike";
 import { OutcomeSuccess, OutcomeFailure } from "../../interfaces/outcomes";
 
 type ResultRepoMethod<data> = OutcomeSuccess<data> | OutcomeFailure;
@@ -44,10 +44,6 @@ export default function buildHikeRepository(): HikeRepository {
           };
         }
 
-        const formatedParticipant = hikeForThisId.participants.map(
-          (participant) => `${participant.firstname} ${participant.name}`
-        );
-
         return {
           outcome: "SUCCESS",
           data: hikeForThisId,
@@ -65,7 +61,10 @@ export default function buildHikeRepository(): HikeRepository {
       try {
         const hikesInDatabase: Hike[] = await HikeModel.find({
           place: placeId,
-        });
+        })
+          .populate("participants")
+          .populate("place")
+          .exec();
 
         return {
           outcome: "SUCCESS",

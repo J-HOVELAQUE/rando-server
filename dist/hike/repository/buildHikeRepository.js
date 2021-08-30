@@ -45,7 +45,6 @@ function buildHikeRepository() {
                         detail: "there is no hike for this id",
                     };
                 }
-                const formatedParticipant = hikeForThisId.participants.map((participant) => `${participant.firstname} ${participant.name}`);
                 return {
                     outcome: "SUCCESS",
                     data: hikeForThisId,
@@ -63,7 +62,10 @@ function buildHikeRepository() {
             try {
                 const hikesInDatabase = yield HikeModel_1.default.find({
                     place: placeId,
-                });
+                })
+                    .populate("participants")
+                    .populate("place")
+                    .exec();
                 return {
                     outcome: "SUCCESS",
                     data: hikesInDatabase,

@@ -6,6 +6,7 @@
     "target": "es6",
     "strict": true,
     "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true
   },
   "include": [
     "src/**/*.ts"

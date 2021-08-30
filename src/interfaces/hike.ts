@@ -11,6 +11,19 @@ export default interface Hike {
   arrivalAltitude: Number;
   description: String;
   date: Date;
-  participants: User[];
+  participants: mongoose.Types.ObjectId[];
   place: mongoose.Types.ObjectId;
+}
+
+export interface PopulatedHike {
+  _id: string;
+  durationInMinutes: Number;
+  elevationInMeters: Number;
+  distanceInMeters: Number;
+  startingAltitude: Number;
+  arrivalAltitude: Number;
+  description: String;
+  date: Date;
+  participants: User[];
+  place: Place;
 }
