@@ -80,7 +80,7 @@ describe("Testing hike controllers", () => {
 
           expect(answer.body).toEqual({
             message: "hike recorded",
-            place: {
+            hike: {
               __v: 0,
               _id: expect.any(String),
               arrivalAltitude: 1900,

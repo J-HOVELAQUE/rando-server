@@ -57,6 +57,6 @@ export default async function (req: Request, res: Response) {
 
   res.status(201).json({
     message: `user ${payload.name} recorded`,
-    place: saveResult.data,
+    user: saveResult.data,
   });
 }

@@ -30,38 +30,38 @@ describe("Testing hike controllers", () => {
     afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
         yield database.connection.close();
     }));
+    beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield HikeModel_1.default.deleteMany();
+        yield PlaceModel_1.default.deleteMany();
+        yield UserModel_1.default.deleteMany();
+        const placeInDb = new PlaceModel_1.default({
+            name: "Pointe de Chalune",
+            mountainLocation: "Chablais",
+            altitudeInMeters: 2030,
+        });
+        const savePlaceResult = yield placeInDb.save();
+        const firstUserInDatabase = new UserModel_1.default({
+            name: "Lharicot",
+            firstname: "Toto",
+            email: "tot.lhar@gmail.fr",
+        });
+        const saveFirstUserInDatabaseResult = yield firstUserInDatabase.save();
+        const secondUserInDatabase = new UserModel_1.default({
+            name: "Golotte",
+            firstname: "Marie",
+            email: "mar.gol@gmail.fr",
+        });
+        const saveSecondUserInDatabaseResult = yield secondUserInDatabase.save();
+        placeInDatabaseId = savePlaceResult.id;
+        firstUserInDatabaseId = saveFirstUserInDatabaseResult._id;
+        secondUserInDatabaseId = saveSecondUserInDatabaseResult._id;
+    }));
+    afterEach(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield HikeModel_1.default.deleteMany();
+        yield PlaceModel_1.default.deleteMany();
+        yield UserModel_1.default.deleteMany();
+    }));
     describe("POST /hike", () => {
-        beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
-            yield HikeModel_1.default.deleteMany();
-            yield PlaceModel_1.default.deleteMany();
-            yield UserModel_1.default.deleteMany();
-            const placeInDb = new PlaceModel_1.default({
-                name: "Pointe de Chalune",
-                mountainLocation: "Chablais",
-                altitudeInMeters: 2030,
-            });
-            const savePlaceResult = yield placeInDb.save();
-            const firstUserInDatabase = new UserModel_1.default({
-                name: "Lharicot",
-                firstname: "Toto",
-                email: "tot.lhar@gmail.fr",
-            });
-            const saveFirstUserInDatabaseResult = yield firstUserInDatabase.save();
-            const secondUserInDatabase = new UserModel_1.default({
-                name: "Golotte",
-                firstname: "Marie",
-                email: "mar.gol@gmail.fr",
-            });
-            const saveSecondUserInDatabaseResult = yield secondUserInDatabase.save();
-            placeInDatabaseId = savePlaceResult._id;
-            firstUserInDatabaseId = saveFirstUserInDatabaseResult._id;
-            secondUserInDatabaseId = saveSecondUserInDatabaseResult._id;
-        }));
-        afterEach(() => __awaiter(void 0, void 0, void 0, function* () {
-            yield HikeModel_1.default.deleteMany();
-            yield PlaceModel_1.default.deleteMany();
-            yield UserModel_1.default.deleteMany();
-        }));
         describe("Given that I wish to record an hike with valid payload, place and participants", () => {
             describe("When I POST the valid payload to /hike", () => {
                 it("Then I receive the success and 201 and the hike is recorded in database", () => __awaiter(void 0, void 0, void 0, function* () {
@@ -82,7 +82,7 @@ describe("Testing hike controllers", () => {
                         .expect(201);
                     expect(answer.body).toEqual({
                         message: "hike recorded",
-                        place: {
+                        hike: {
                             __v: 0,
                             _id: expect.any(String),
                             arrivalAltitude: 1900,
@@ -104,7 +104,6 @@ describe("Testing hike controllers", () => {
                     expect(hikesInDatabase[0].distanceInMeters).toBe(6000);
                     expect(hikesInDatabase[0].elevationInMeters).toBe(900);
                     expect(hikesInDatabase[0].startingAltitude).toBe(1000);
-                    expect(hikesInDatabase[0].place).toEqual(placeInDatabaseId);
                 }));
             });
         });
@@ -140,7 +139,204 @@ describe("Testing hike controllers", () => {
         });
         describe("Given that I try to record a new hike with an inexisting place id", () => {
             describe("When I POST a payload with inexisting place on /hike", () => {
-                it("Then I receive a failure and there is no hike in database", () => __awaiter(void 0, void 0, void 0, function* () { }));
+                it("Then I receive a failure and there is no hike in database", () => __awaiter(void 0, void 0, void 0, function* () {
+                    const answer = yield supertest_1.default(app)
+                        .post("/hike")
+                        .send({
+                        durationInMinutes: 120,
+                        elevationInMeters: 900,
+                        distanceInMeters: 6000,
+                        startingAltitude: 1000,
+                        arrivalAltitude: 1900,
+                        description: "Très belle randonnée.",
+                        date: "2021-12-03",
+                        participants: [firstUserInDatabaseId, secondUserInDatabaseId],
+                        place: "61236a11058423084474c166",
+                    })
+                        .set("Accept", "application/json")
+                        .expect(409);
+                    expect(answer.body).toEqual({
+                        error: "database error",
+                        details: "no place with this id in database",
+                    });
+                    const hikesInDatabase = yield HikeModel_1.default.find();
+                    expect(hikesInDatabase.length).toBe(0);
+                }));
+            });
+        });
+        describe("Given that I try to record a new hike with an inexisting user id", () => {
+            describe("When I POST a payload with inexisting user on /hike", () => {
+                it("Then I receive a failure and there is no hike in database", () => __awaiter(void 0, void 0, void 0, function* () {
+                    const answer = yield supertest_1.default(app)
+                        .post("/hike")
+                        .send({
+                        durationInMinutes: 120,
+                        elevationInMeters: 900,
+                        distanceInMeters: 6000,
+                        startingAltitude: 1000,
+                        arrivalAltitude: 1900,
+                        description: "Très belle randonnée.",
+                        date: "2021-12-03",
+                        participants: [firstUserInDatabaseId, "61236a11058423084474c166"],
+                        place: placeInDatabaseId,
+                    })
+                        .set("Accept", "application/json")
+                        .expect(409);
+                    expect(answer.body).toEqual({
+                        error: "database error",
+                        details: "no participant with this id in database",
+                    });
+                    const hikesInDatabase = yield HikeModel_1.default.find();
+                    expect(hikesInDatabase.length).toBe(0);
+                }));
+            });
+        });
+    });
+    describe("GET /hike", () => {
+        let hikeIdInDatabase;
+        beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
+            yield HikeModel_1.default.deleteMany();
+            const hikeInDatabase = new HikeModel_1.default({
+                durationInMinutes: 120,
+                elevationInMeters: 900,
+                distanceInMeters: 6000,
+                startingAltitude: 1000,
+                arrivalAltitude: 1900,
+                description: "Très belle randonnée.",
+                date: "2021-12-03",
+                participants: [firstUserInDatabaseId, secondUserInDatabaseId],
+                place: placeInDatabaseId,
+            });
+            const saveResult = yield hikeInDatabase.save();
+            hikeIdInDatabase = saveResult.id;
+        }));
+        afterEach(() => __awaiter(void 0, void 0, void 0, function* () {
+            yield HikeModel_1.default.deleteMany();
+        }));
+        describe("Given that I wish to get all hike in database", () => {
+            describe("When I GET on /hike with no params", () => {
+                it("Then I receive success and an array with hike in db", () => __awaiter(void 0, void 0, void 0, function* () {
+                    const answer = yield supertest_1.default(app).get("/hike").expect(200);
+                    expect(answer.body).toEqual({
+                        message: "there is 1 hikes in database",
+                        places: [
+                            {
+                                __v: 0,
+                                _id: expect.any(String),
+                                arrivalAltitude: 1900,
+                                date: "2021-12-03T00:00:00.000Z",
+                                description: "Très belle randonnée.",
+                                distanceInMeters: 6000,
+                                durationInMinutes: 120,
+                                elevationInMeters: 900,
+                                participants: [expect.any(String), expect.any(String)],
+                                place: expect.any(String),
+                                startingAltitude: 1000,
+                            },
+                        ],
+                    });
+                }));
+            });
+        });
+        describe("Given that I wish to get one hike in database", () => {
+            describe("When I GET on /hike with existing hike id as params", () => {
+                it("Then I receive success and data for this hike", () => __awaiter(void 0, void 0, void 0, function* () {
+                    const answer = yield supertest_1.default(app)
+                        .get("/hike/" + hikeIdInDatabase)
+                        .expect(200);
+                    expect(answer.body).toEqual({
+                        hike: {
+                            __v: 0,
+                            _id: hikeIdInDatabase,
+                            arrivalAltitude: 1900,
+                            date: "2021-12-03T00:00:00.000Z",
+                            description: "Très belle randonnée.",
+                            distanceInMeters: 6000,
+                            durationInMinutes: 120,
+                            elevationInMeters: 900,
+                            participants: [
+                                {
+                                    __v: 0,
+                                    _id: expect.any(String),
+                                    email: "tot.lhar@gmail.fr",
+                                    firstname: "Toto",
+                                    name: "Lharicot",
+                                },
+                                {
+                                    __v: 0,
+                                    _id: expect.any(String),
+                                    email: "mar.gol@gmail.fr",
+                                    firstname: "Marie",
+                                    name: "Golotte",
+                                },
+                            ],
+                            place: expect.any(String),
+                            startingAltitude: 1000,
+                        },
+                        message: "hike founded",
+                    });
+                }));
+            });
+        });
+        describe("Given that I wish to get an inexisting hike in database", () => {
+            describe("When I GET on /hike with inexisting hike id as params", () => {
+                it("Then I receive success and data for this hike", () => __awaiter(void 0, void 0, void 0, function* () {
+                    const answer = yield supertest_1.default(app)
+                        .get("/hike/61236a11058423084474c166")
+                        .expect(404);
+                    expect(answer.body).toEqual({
+                        details: "there is no hike for this id",
+                        error: "databaseError",
+                    });
+                }));
+            });
+        });
+        describe("Given that I wish to get hikes in database for a place", () => {
+            describe("When I GET on /hike/byPlace with existing place id as params", () => {
+                it("Then I receive success and data for this hike", () => __awaiter(void 0, void 0, void 0, function* () {
+                    const answer = yield supertest_1.default(app)
+                        .get("/hike/byPlace/" + placeInDatabaseId)
+                        .expect(200);
+                    expect(answer.body).toEqual({
+                        hikes: [
+                            {
+                                __v: 0,
+                                _id: expect.any(String),
+                                arrivalAltitude: 1900,
+                                date: "2021-12-03T00:00:00.000Z",
+                                description: "Très belle randonnée.",
+                                distanceInMeters: 6000,
+                                durationInMinutes: 120,
+                                elevationInMeters: 900,
+                                participants: [
+                                    {
+                                        __v: 0,
+                                        _id: expect.any(String),
+                                        email: "tot.lhar@gmail.fr",
+                                        firstname: "Toto",
+                                        name: "Lharicot",
+                                    },
+                                    {
+                                        __v: 0,
+                                        _id: expect.any(String),
+                                        email: "mar.gol@gmail.fr",
+                                        firstname: "Marie",
+                                        name: "Golotte",
+                                    },
+                                ],
+                                place: {
+                                    __v: 0,
+                                    _id: expect.any(String),
+                                    altitudeInMeters: 2030,
+                                    mountainLocation: "Chablais",
+                                    name: "Pointe de Chalune",
+                                },
+                                startingAltitude: 1000,
+                            },
+                        ],
+                        message: "there is 1 hikes in database for this place",
+                    });
+                }));
             });
         });
     });

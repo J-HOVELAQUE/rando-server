@@ -18,7 +18,7 @@ function default_1(req, res) {
         const hikeRepository = buildHikeRepository_1.default();
         const getHikeResult = yield hikeRepository.findById(req.params.hikeId);
         if (getHikeResult.outcome === "FAILURE") {
-            res.status(503).json({
+            res.status(404).json({
                 error: "databaseError",
                 details: getHikeResult.detail,
             });

@@ -88,7 +88,7 @@ function default_1(req, res) {
         }
         res.status(201).json({
             message: `hike recorded`,
-            place: saveResult.data,
+            hike: saveResult.data,
         });
     });
 }

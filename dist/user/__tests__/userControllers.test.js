@@ -46,7 +46,7 @@ describe("Testing user controllers", () => {
                         .expect(201);
                     expect(answer.body).toEqual({
                         message: "user Lharicot recorded",
-                        place: {
+                        user: {
                             __v: 0,
                             _id: expect.any(String),
                             email: "tot.lhar@gmail.fr",
@@ -54,7 +54,7 @@ describe("Testing user controllers", () => {
                             name: "Lharicot",
                         },
                     });
-                    const userId = answer.body.place._id;
+                    const userId = answer.body.user._id;
                     const allPlaceInDb = yield UserModel_1.default.find();
                     const userRecorded = yield UserModel_1.default.findById(userId);
                     expect(allPlaceInDb.length).toBe(1);
