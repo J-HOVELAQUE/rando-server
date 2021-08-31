@@ -50,12 +50,41 @@ function default_1(req, res) {
         //// Rec in database
         const saveResult = yield hikeRepository.create(payload);
         if (saveResult.outcome === "FAILURE") {
-            res.status(503).json({
-                error: "databaseError",
-                errorCode: saveResult.errorCode,
-                details: saveResult.detail,
-            });
-            return;
+            switch (saveResult.errorCode) {
+                case "DATABASE_ERROR":
+                    res.status(503).json({
+                        error: "databaseError",
+                        errorCode: saveResult.errorCode,
+                        details: saveResult.detail,
+                    });
+                    return;
+                case "FOREIGN_KEY_PLACE_ERROR":
+                    res.status(409).json({
+                        error: "database error",
+                        details: "no place with this id in database",
+                    });
+                    return;
+                case "FOREIGN_KEY_USER_ERROR":
+                    res.status(409).json({
+                        error: "database error",
+                        details: "no participant with this id in database",
+                    });
+                    return;
+                case "NO_HIKE":
+                    res.status(404).json({
+                        error: "database error",
+                        details: "there is no hike with this id in database",
+                    });
+                    return;
+                case "UNIQUE_CONSTRAIN_ERROR":
+                    res.status(409).json({
+                        error: "database error",
+                        details: "there is an hike with this id already in database",
+                    });
+                    return;
+                default:
+                    return;
+            }
         }
         res.status(201).json({
             message: `hike recorded`,

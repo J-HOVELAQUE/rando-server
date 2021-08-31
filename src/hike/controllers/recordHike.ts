@@ -1,4 +1,3 @@
-import HikeModel from "../model/HikeModel";
 import { Request, Response } from "express";
 import Joi, { ValidationError } from "joi";
 import buildHikeRepository from "../repository/buildHikeRepository";

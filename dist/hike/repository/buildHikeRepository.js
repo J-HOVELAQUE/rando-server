@@ -85,7 +85,7 @@ function buildHikeRepository() {
                 if (!placeValidation) {
                     return {
                         outcome: "FAILURE",
-                        errorCode: "FOREIGN_KEY_ERROR",
+                        errorCode: "FOREIGN_KEY_PLACE_ERROR",
                         detail: "The place doesn't exist",
                     };
                 }
@@ -103,11 +103,7 @@ function buildHikeRepository() {
                 };
             }
             catch (error) {
-                let errorCode = "DATABASE_ERROR";
                 if (error.code && error.code === 11000) {
-                    errorCode = "UNIQUE_CONSTRAIN_ERROR";
-                }
-                if (error.message === "USER_ERROR") {
                     return {
                         outcome: "FAILURE",
                         errorCode: "UNIQUE_CONSTRAIN_ERROR",
@@ -115,9 +111,17 @@ function buildHikeRepository() {
                         detail: error,
                     };
                 }
+                if (error.message === "USER_ERROR") {
+                    return {
+                        outcome: "FAILURE",
+                        errorCode: "FOREIGN_KEY_USER_ERROR",
+                        reason: "One or more user doesn't exist",
+                        detail: error,
+                    };
+                }
                 return {
                     outcome: "FAILURE",
-                    errorCode: errorCode,
+                    errorCode: "DATABASE_ERROR",
                     detail: error,
                 };
             }

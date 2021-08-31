@@ -6,7 +6,7 @@ export default async function (req: Request, res: Response) {
   const getHikeResult = await hikeRepository.findById(req.params.hikeId);
 
   if (getHikeResult.outcome === "FAILURE") {
-    res.status(503).json({
+    res.status(404).json({
       error: "databaseError",
       details: getHikeResult.detail,
     });
