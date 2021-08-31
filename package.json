@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --verbose --runInBand",
     "dev": "concurrently -k -n \"Typescript,Node\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"set NODE_ENV=dev&& nodemon dist/index.js\"",
-    "start": "tsc && node dist/index.js"
+    "start": "tsc && node dist/index.js",
+    "testHike": "jest src/hike --runInBand --coverage=false"
   },
   "author": "Julien Hovelaque",
   "license": "ISC",

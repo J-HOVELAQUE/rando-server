@@ -1,10 +1,23 @@
 import HikeModel from "../model/HikeModel";
 import PlaceModel from "../../place/model/PlaceModel";
 import UserModel from "../../user/model/UserModel";
-import Hike, { PopulatedHike } from "../../interfaces/hike";
+import Hike from "../../interfaces/hike";
 import { OutcomeSuccess, OutcomeFailure } from "../../interfaces/outcomes";
 
-type ResultRepoMethod<data> = OutcomeSuccess<data> | OutcomeFailure;
+type HikeRepositoryError =
+  | "DATABASE_ERROR"
+  | "NO_HIKE"
+  | "FOREIGN_KEY_PLACE_ERROR"
+  | "UNIQUE_CONSTRAIN_ERROR"
+  | "FOREIGN_KEY_USER_ERROR";
+
+interface HikeRepositoryOutcomeFailure extends OutcomeFailure {
+  errorCode: HikeRepositoryError;
+}
+
+type ResultRepoMethod<data> =
+  | OutcomeSuccess<data>
+  | HikeRepositoryOutcomeFailure;
 
 interface HikeRepository {
   create: (hikeToCreate: Hike) => Promise<ResultRepoMethod<Hike>>;
@@ -86,7 +99,7 @@ export default function buildHikeRepository(): HikeRepository {
         if (!placeValidation) {
           return {
             outcome: "FAILURE",
-            errorCode: "FOREIGN_KEY_ERROR",
+            errorCode: "FOREIGN_KEY_PLACE_ERROR",
             detail: "The place doesn't exist",
           };
         }
@@ -105,13 +118,7 @@ export default function buildHikeRepository(): HikeRepository {
           data: dbAnswer,
         };
       } catch (error) {
-        let errorCode: string = "DATABASE_ERROR";
-
         if (error.code && error.code === 11000) {
-          errorCode = "UNIQUE_CONSTRAIN_ERROR";
-        }
-
-        if (error.message === "USER_ERROR") {
           return {
             outcome: "FAILURE",
             errorCode: "UNIQUE_CONSTRAIN_ERROR",
@@ -119,9 +126,18 @@ export default function buildHikeRepository(): HikeRepository {
             detail: error,
           };
         }
+
+        if (error.message === "USER_ERROR") {
+          return {
+            outcome: "FAILURE",
+            errorCode: "FOREIGN_KEY_USER_ERROR",
+            reason: "One or more user doesn't exist",
+            detail: error,
+          };
+        }
         return {
           outcome: "FAILURE",
-          errorCode: errorCode,
+          errorCode: "DATABASE_ERROR",
           detail: error,
         };
       }
