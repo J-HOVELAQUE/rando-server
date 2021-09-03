@@ -74,6 +74,22 @@ function buildPlaceRepository() {
                 };
             }
         }),
+        update: (placeId, placeData) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield PlaceModel_1.default.updateOne({ _id: placeId }, placeData);
+                return {
+                    outcome: "SUCCESS",
+                    data: result,
+                };
+            }
+            catch (error) {
+                return {
+                    outcome: "FAILURE",
+                    errorCode: "DATABASE_ERROR",
+                    detail: error,
+                };
+            }
+        }),
     };
 }
 exports.default = buildPlaceRepository;

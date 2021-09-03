@@ -4,10 +4,21 @@ import { OutcomeSuccess, OutcomeFailure } from "../../interfaces/outcomes";
 
 type ResultRepoMethod<data> = OutcomeSuccess<data> | OutcomeFailure;
 
+interface PlaceDataToUpdate {
+  name?: string;
+  mountainLocation?: string;
+  altitudeInMeters?: number;
+  city?: string;
+}
+
 interface PlaceRepository {
   create: (placeToCreate: Place) => Promise<ResultRepoMethod<Place>>;
   findAll: () => Promise<ResultRepoMethod<Place[]>>;
   findOne: (id: string) => Promise<ResultRepoMethod<Place>>;
+  update: (
+    placeId: string,
+    placeData: PlaceDataToUpdate
+  ) => Promise<ResultRepoMethod<any>>;
 }
 
 export default function buildPlaceRepository(): PlaceRepository {
@@ -61,6 +72,23 @@ export default function buildPlaceRepository(): PlaceRepository {
         return {
           outcome: "SUCCESS",
           data: searchedPlace,
+        };
+      } catch (error) {
+        return {
+          outcome: "FAILURE",
+          errorCode: "DATABASE_ERROR",
+          detail: error,
+        };
+      }
+    },
+
+    update: async (placeId: string, placeData: PlaceDataToUpdate) => {
+      try {
+        const result = await PlaceModel.updateOne({ _id: placeId }, placeData);
+
+        return {
+          outcome: "SUCCESS",
+          data: result,
         };
       } catch (error) {
         return {
