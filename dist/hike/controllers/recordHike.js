@@ -33,14 +33,9 @@ function default_1(req, res) {
             payload.participants = [payload.participants];
         }
         //// Payload validation
-        try {
-            joi_1.default.assert(payload, hikeSchema, {
-                abortEarly: false,
-            });
-        }
-        catch (error) {
-            const errorReport = error;
-            const errorMessages = errorReport.details.map((err) => err.message);
+        const { error, value } = hikeSchema.validate(payload, { abortEarly: false });
+        if (error) {
+            const errorMessages = error.details.map((err) => err.message);
             res.status(400).json({
                 error: "payloadError",
                 details: errorMessages,

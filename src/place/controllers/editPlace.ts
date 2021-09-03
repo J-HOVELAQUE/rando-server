@@ -23,15 +23,12 @@ export default async function editPlaceData(req: Request, res: Response) {
   const placeToUpdateId: string = req.params.placeId;
 
   ///// Payload validation
-  try {
-    Joi.assert(payload, placeDataSchema, {
-      abortEarly: false,
-    });
-  } catch (error) {
-    const errorReport: ValidationError = error;
-    const errorMessages: String[] = errorReport.details.map(
-      (err) => err.message
-    );
+  const { error, value } = placeDataSchema.validate(payload, {
+    abortEarly: false,
+  });
+
+  if (error) {
+    const errorMessages: String[] = error.details.map((err) => err.message);
     res.status(400).json({
       error: "payloadError",
       details: errorMessages,

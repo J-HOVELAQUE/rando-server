@@ -24,15 +24,10 @@ export default async function (req: Request, res: Response) {
   const payload: Place = req.body;
 
   ///// Payload validation
-  try {
-    Joi.assert(payload, placeSchema, {
-      abortEarly: false,
-    });
-  } catch (error) {
-    const errorReport: ValidationError = error;
-    const errorMessages: String[] = errorReport.details.map(
-      (err) => err.message
-    );
+  const { error, value } = placeSchema.validate(payload, { abortEarly: false });
+
+  if (error) {
+    const errorMessages: String[] = error.details.map((err) => err.message);
     res.status(400).json({
       error: "payloadError",
       details: errorMessages,

@@ -26,14 +26,9 @@ function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const payload = req.body;
         ///// Payload validation
-        try {
-            joi_1.default.assert(payload, placeSchema, {
-                abortEarly: false,
-            });
-        }
-        catch (error) {
-            const errorReport = error;
-            const errorMessages = errorReport.details.map((err) => err.message);
+        const { error, value } = placeSchema.validate(payload, { abortEarly: false });
+        if (error) {
+            const errorMessages = error.details.map((err) => err.message);
             res.status(400).json({
                 error: "payloadError",
                 details: errorMessages,
