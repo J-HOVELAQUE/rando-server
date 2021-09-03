@@ -25,13 +25,16 @@ function buildPlaceRepository() {
                 };
             }
             catch (error) {
-                let errorCode = "DATABASE_ERROR";
                 if (error.code && error.code === 11000) {
-                    errorCode = "UNIQUE_CONSTRAIN_ERROR";
+                    return {
+                        outcome: "FAILURE",
+                        errorCode: "UNIQUE_CONSTRAIN_ERROR",
+                        detail: error,
+                    };
                 }
                 return {
                     outcome: "FAILURE",
-                    errorCode: errorCode,
+                    errorCode: "DATABASE_ERROR",
                     detail: error,
                 };
             }
@@ -83,6 +86,13 @@ function buildPlaceRepository() {
                 };
             }
             catch (error) {
+                if (error.name === "CastError") {
+                    return {
+                        outcome: "FAILURE",
+                        errorCode: "CAST_ERROR",
+                        detail: error,
+                    };
+                }
                 return {
                     outcome: "FAILURE",
                     errorCode: "DATABASE_ERROR",

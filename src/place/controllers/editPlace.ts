@@ -42,6 +42,13 @@ export default async function editPlaceData(req: Request, res: Response) {
   const updateResult = await placeRepository.update(placeToUpdateId, payload);
 
   if (updateResult.outcome === "FAILURE") {
+    if (updateResult.errorCode === "CAST_ERROR") {
+      res.status(400).json({
+        error: "cast error",
+        details: "invalid id",
+      });
+      return;
+    }
     res.status(503).json({
       error: "databaseError",
       details: updateResult.detail,
@@ -49,5 +56,11 @@ export default async function editPlaceData(req: Request, res: Response) {
     return;
   }
 
+  if (updateResult.data.nModified === 0) {
+    res
+      .status(200)
+      .json({ message: "no document found", result: updateResult.data });
+    return;
+  }
   res.json({ message: "update", result: updateResult.data });
 }

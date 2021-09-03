@@ -2,7 +2,19 @@ import PlaceModel from "../model/PlaceModel";
 import Place from "../../interfaces/place";
 import { OutcomeSuccess, OutcomeFailure } from "../../interfaces/outcomes";
 
-type ResultRepoMethod<data> = OutcomeSuccess<data> | OutcomeFailure;
+type PlaceRepositoryError =
+  | "DATABASE_ERROR"
+  | "UNIQUE_CONSTRAIN_ERROR"
+  | "ID_NOT_FOUND"
+  | "CAST_ERROR";
+
+interface PlaceRepositoryOutcomeFailure extends OutcomeFailure {
+  errorCode: PlaceRepositoryError;
+}
+
+type ResultRepoMethod<data> =
+  | OutcomeSuccess<data>
+  | PlaceRepositoryOutcomeFailure;
 
 interface PlaceDataToUpdate {
   name?: string;
@@ -32,13 +44,16 @@ export default function buildPlaceRepository(): PlaceRepository {
           data: dbAnswer,
         };
       } catch (error) {
-        let errorCode: string = "DATABASE_ERROR";
         if (error.code && error.code === 11000) {
-          errorCode = "UNIQUE_CONSTRAIN_ERROR";
+          return {
+            outcome: "FAILURE",
+            errorCode: "UNIQUE_CONSTRAIN_ERROR",
+            detail: error,
+          };
         }
         return {
           outcome: "FAILURE",
-          errorCode: errorCode,
+          errorCode: "DATABASE_ERROR",
           detail: error,
         };
       }
@@ -91,6 +106,13 @@ export default function buildPlaceRepository(): PlaceRepository {
           data: result,
         };
       } catch (error) {
+        if (error.name === "CastError") {
+          return {
+            outcome: "FAILURE",
+            errorCode: "CAST_ERROR",
+            detail: error,
+          };
+        }
         return {
           outcome: "FAILURE",
           errorCode: "DATABASE_ERROR",

@@ -42,10 +42,23 @@ function editPlaceData(req, res) {
         }
         const updateResult = yield placeRepository.update(placeToUpdateId, payload);
         if (updateResult.outcome === "FAILURE") {
+            if (updateResult.errorCode === "CAST_ERROR") {
+                res.status(400).json({
+                    error: "cast error",
+                    details: "invalid id",
+                });
+                return;
+            }
             res.status(503).json({
                 error: "databaseError",
                 details: updateResult.detail,
             });
+            return;
+        }
+        if (updateResult.data.nModified === 0) {
+            res
+                .status(200)
+                .json({ message: "no document found", result: updateResult.data });
             return;
         }
         res.json({ message: "update", result: updateResult.data });
