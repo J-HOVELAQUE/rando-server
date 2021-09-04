@@ -1,4 +1,5 @@
 import PlaceModel from "../model/PlaceModel";
+import HikeModel from "../../hike/model/HikeModel";
 import Place from "../../interfaces/place";
 import { OutcomeSuccess, OutcomeFailure } from "../../interfaces/outcomes";
 
@@ -6,7 +7,8 @@ type PlaceRepositoryError =
   | "DATABASE_ERROR"
   | "UNIQUE_CONSTRAIN_ERROR"
   | "ID_NOT_FOUND"
-  | "CAST_ERROR";
+  | "CAST_ERROR"
+  | "RELATIONAL_ERROR";
 
 interface PlaceRepositoryOutcomeFailure extends OutcomeFailure {
   errorCode: PlaceRepositoryError;
@@ -31,6 +33,7 @@ interface PlaceRepository {
     placeId: string,
     placeData: PlaceDataToUpdate
   ) => Promise<ResultRepoMethod<any>>;
+  delete: (placeId: string) => Promise<ResultRepoMethod<any>>;
 }
 
 export default function buildPlaceRepository(): PlaceRepository {
@@ -43,7 +46,7 @@ export default function buildPlaceRepository(): PlaceRepository {
           outcome: "SUCCESS",
           data: dbAnswer,
         };
-      } catch (error) {
+      } catch (error: any) {
         if (error.code && error.code === 11000) {
           return {
             outcome: "FAILURE",
@@ -51,6 +54,7 @@ export default function buildPlaceRepository(): PlaceRepository {
             detail: error,
           };
         }
+
         return {
           outcome: "FAILURE",
           errorCode: "DATABASE_ERROR",
@@ -66,7 +70,7 @@ export default function buildPlaceRepository(): PlaceRepository {
           outcome: "SUCCESS",
           data: placesInDatabase,
         };
-      } catch (error) {
+      } catch (error: any) {
         return {
           outcome: "FAILURE",
           errorCode: "DATABASE_ERROR",
@@ -88,7 +92,7 @@ export default function buildPlaceRepository(): PlaceRepository {
           outcome: "SUCCESS",
           data: searchedPlace,
         };
-      } catch (error) {
+      } catch (error: any) {
         return {
           outcome: "FAILURE",
           errorCode: "DATABASE_ERROR",
@@ -105,7 +109,7 @@ export default function buildPlaceRepository(): PlaceRepository {
           outcome: "SUCCESS",
           data: result,
         };
-      } catch (error) {
+      } catch (error: any) {
         if (error.name === "CastError") {
           return {
             outcome: "FAILURE",
@@ -113,6 +117,33 @@ export default function buildPlaceRepository(): PlaceRepository {
             detail: error,
           };
         }
+        return {
+          outcome: "FAILURE",
+          errorCode: "DATABASE_ERROR",
+          detail: error,
+        };
+      }
+    },
+
+    delete: async (placeId: string) => {
+      const hikeWithThisPlace = await HikeModel.find({ place: placeId });
+
+      if (hikeWithThisPlace.length >= 1) {
+        return {
+          outcome: "FAILURE",
+          errorCode: "RELATIONAL_ERROR",
+          detail: "There is one or more hike in this place",
+        };
+      }
+
+      try {
+        const deletionResult = await PlaceModel.deleteOne({ _id: placeId });
+
+        return {
+          outcome: "SUCCESS",
+          data: deletionResult,
+        };
+      } catch (error: any) {
         return {
           outcome: "FAILURE",
           errorCode: "DATABASE_ERROR",

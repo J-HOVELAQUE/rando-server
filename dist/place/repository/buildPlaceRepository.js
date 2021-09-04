@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const PlaceModel_1 = __importDefault(require("../model/PlaceModel"));
+const HikeModel_1 = __importDefault(require("../../hike/model/HikeModel"));
 function buildPlaceRepository() {
     return {
         create: (placeToCreate) => __awaiter(this, void 0, void 0, function* () {
@@ -93,6 +94,30 @@ function buildPlaceRepository() {
                         detail: error,
                     };
                 }
+                return {
+                    outcome: "FAILURE",
+                    errorCode: "DATABASE_ERROR",
+                    detail: error,
+                };
+            }
+        }),
+        delete: (placeId) => __awaiter(this, void 0, void 0, function* () {
+            const hikeWithThisPlace = yield HikeModel_1.default.find({ place: placeId });
+            if (hikeWithThisPlace.length >= 1) {
+                return {
+                    outcome: "FAILURE",
+                    errorCode: "RELATIONAL_ERROR",
+                    detail: "There is one or more hike in this place",
+                };
+            }
+            try {
+                const deletionResult = yield PlaceModel_1.default.deleteOne({ _id: placeId });
+                return {
+                    outcome: "SUCCESS",
+                    data: deletionResult,
+                };
+            }
+            catch (error) {
                 return {
                     outcome: "FAILURE",
                     errorCode: "DATABASE_ERROR",

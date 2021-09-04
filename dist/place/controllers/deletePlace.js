@@ -12,22 +12,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const buildHikeRepository_1 = __importDefault(require("../repository/buildHikeRepository"));
-function default_1(req, res) {
+const buildPlaceRepository_1 = __importDefault(require("../repository/buildPlaceRepository"));
+const placeRepository = buildPlaceRepository_1.default();
+function deletePlace(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const hikeRepository = buildHikeRepository_1.default();
-        const getHikesResult = yield hikeRepository.findAll();
-        if (getHikesResult.outcome === "FAILURE") {
+        const deleteResult = yield placeRepository.delete(req.params.placeId);
+        if (deleteResult.outcome === "FAILURE") {
+            if (deleteResult.errorCode === "RELATIONAL_ERROR") {
+                res.status(400).json({
+                    message: "Deletion failed",
+                    reason: "There is one or more hike in this place",
+                });
+                return;
+            }
             res.status(503).json({
-                error: "databaseError",
-                details: getHikesResult.detail,
+                message: "Deletion failed",
+                reason: deleteResult.detail,
             });
             return;
         }
-        res.status(200).json({
-            message: `there is ${getHikesResult.data.length} hikes in database`,
-            hikes: getHikesResult.data,
-        });
+        res.json({ message: "place deleted", result: deleteResult.data });
     });
 }
-exports.default = default_1;
+exports.default = deletePlace;

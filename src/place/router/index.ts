@@ -1,7 +1,8 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import recordPlace from "../controllers/recordPlace";
 import getPlace from "../controllers/getPlace";
 import editPlaceData from "../controllers/editPlace";
+import deletePlace from "../controllers/deletePlace";
 
 const placeRouter = express.Router();
 
@@ -11,10 +12,6 @@ placeRouter.post("/", recordPlace);
 
 placeRouter.put("/:placeId", editPlaceData);
 
-placeRouter.delete("/", (req: Request, res: Response) => {
-  res.json({
-    message: "Deleting a place",
-  });
-});
+placeRouter.delete("/:placeId", deletePlace);
 
 export default placeRouter;

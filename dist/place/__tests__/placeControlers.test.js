@@ -279,7 +279,7 @@ describe("Testing place controlers", () => {
                         .set("Accept", "application/json")
                         .expect(200);
                     expect(answer.body).toEqual({
-                        message: "no document found",
+                        message: "no document found or no change from old data",
                         result: {
                             n: 0,
                             nModified: 0,

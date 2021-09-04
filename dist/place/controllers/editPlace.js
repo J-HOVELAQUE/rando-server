@@ -55,7 +55,10 @@ function editPlaceData(req, res) {
         if (updateResult.data.nModified === 0) {
             res
                 .status(200)
-                .json({ message: "no document found", result: updateResult.data });
+                .json({
+                message: "no document found or no change from old data",
+                result: updateResult.data,
+            });
             return;
         }
         res.json({ message: "update", result: updateResult.data });

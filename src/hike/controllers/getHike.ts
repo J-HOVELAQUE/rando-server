@@ -15,6 +15,6 @@ export default async function (req: Request, res: Response) {
 
   res.status(200).json({
     message: `there is ${getHikesResult.data.length} hikes in database`,
-    places: getHikesResult.data,
+    hikes: getHikesResult.data,
   });
 }
