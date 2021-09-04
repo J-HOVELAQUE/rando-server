@@ -233,7 +233,7 @@ describe("Testing hike controllers", () => {
 
           expect(answer.body).toEqual({
             message: "there is 1 hikes in database",
-            places: [
+            hikes: [
               {
                 __v: 0,
                 _id: expect.any(String),

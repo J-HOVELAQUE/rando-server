@@ -219,7 +219,7 @@ describe("Testing hike controllers", () => {
                     const answer = yield supertest_1.default(app).get("/hike").expect(200);
                     expect(answer.body).toEqual({
                         message: "there is 1 hikes in database",
-                        places: [
+                        hikes: [
                             {
                                 __v: 0,
                                 _id: expect.any(String),
