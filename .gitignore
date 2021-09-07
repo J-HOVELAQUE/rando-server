@@ -4,3 +4,4 @@ config/dev.json
 config/test.json
 .editorConfig
 prettierrc.json
+testDelete.js

@@ -70,7 +70,7 @@ export default async function uploadImageFromFileArray(
       outcome: "SUCCESS",
       data: pictureUrl,
     };
-  } catch (error) {
+  } catch (error: any) {
     return {
       outcome: "FAILURE",
       errorCode: "CLOUDINARY_ERROR",
