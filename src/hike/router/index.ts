@@ -3,6 +3,7 @@ import recordHike from "../controllers/recordHike";
 import getHike from "../controllers/getHike";
 import getHikeByPlace from "../controllers/getHikeByPlace";
 import getHikeById from "../controllers/getHikeById";
+import editHikeData from "../controllers/editeHike";
 
 const hikeRouter = express.Router();
 
@@ -14,11 +15,7 @@ hikeRouter.get("/byPlace/:placeId", getHikeByPlace);
 
 hikeRouter.post("/", recordHike);
 
-hikeRouter.put("/", (req: Request, res: Response) => {
-  res.json({
-    message: "Update an hike",
-  });
-});
+hikeRouter.put("/:hikeId", editHikeData);
 
 hikeRouter.delete("/", (req: Request, res: Response) => {
   res.json({
