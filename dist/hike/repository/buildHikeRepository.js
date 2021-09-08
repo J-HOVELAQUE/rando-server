@@ -126,6 +126,29 @@ function buildHikeRepository() {
                 };
             }
         }),
+        update: (hikeId, hikeData) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield HikeModel_1.default.updateOne({ _id: hikeId }, hikeData);
+                return {
+                    outcome: "SUCCESS",
+                    data: result,
+                };
+            }
+            catch (error) {
+                if (error.name === "CastError") {
+                    return {
+                        outcome: "FAILURE",
+                        errorCode: "CAST_ERROR",
+                        detail: error,
+                    };
+                }
+                return {
+                    outcome: "FAILURE",
+                    errorCode: "DATABASE_ERROR",
+                    detail: error,
+                };
+            }
+        }),
     };
 }
 exports.default = buildHikeRepository;
