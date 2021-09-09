@@ -4,6 +4,7 @@ import getHike from "../controllers/getHike";
 import getHikeByPlace from "../controllers/getHikeByPlace";
 import getHikeById from "../controllers/getHikeById";
 import editHikeData from "../controllers/editeHike";
+import deleteHike from "../controllers/deleteHike";
 
 const hikeRouter = express.Router();
 
@@ -17,10 +18,6 @@ hikeRouter.post("/", recordHike);
 
 hikeRouter.put("/:hikeId", editHikeData);
 
-hikeRouter.delete("/", (req: Request, res: Response) => {
-  res.json({
-    message: "Deleting an hike",
-  });
-});
+hikeRouter.delete("/:hikeId", deleteHike);
 
 export default hikeRouter;

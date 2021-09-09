@@ -4,7 +4,7 @@ import buildHikeRepository from "../repository/buildHikeRepository";
 const hikeRepository = buildHikeRepository();
 
 export default async function deleteHike(req: Request, res: Response) {
-  const deleteResult = await hikeRepository.delete(req.params.placeId);
+  const deleteResult = await hikeRepository.delete(req.params.hikeId);
 
   if (deleteResult.outcome === "FAILURE") {
     res.status(503).json({
