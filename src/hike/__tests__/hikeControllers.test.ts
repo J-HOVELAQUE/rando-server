@@ -5,6 +5,8 @@ import supertest from "supertest";
 import HikeModel from "../model/HikeModel";
 import PlaceModel from "../../place/model/PlaceModel";
 import UserModel from "../../user/model/UserModel";
+import setupHikeTest from "./setupHikeTests";
+import teardownHikeTests from "./teardownHikeTests";
 
 describe("Testing hike controllers", () => {
   let database: Mongoose;
@@ -22,40 +24,14 @@ describe("Testing hike controllers", () => {
   });
 
   beforeEach(async () => {
-    await HikeModel.deleteMany();
-    await PlaceModel.deleteMany();
-    await UserModel.deleteMany();
-
-    const placeInDb = new PlaceModel({
-      name: "Pointe de Chalune",
-      mountainLocation: "Chablais",
-      altitudeInMeters: 2030,
-    });
-    const savePlaceResult = await placeInDb.save();
-
-    const firstUserInDatabase = new UserModel({
-      name: "Lharicot",
-      firstname: "Toto",
-      email: "tot.lhar@gmail.fr",
-    });
-    const saveFirstUserInDatabaseResult = await firstUserInDatabase.save();
-
-    const secondUserInDatabase = new UserModel({
-      name: "Golotte",
-      firstname: "Marie",
-      email: "mar.gol@gmail.fr",
-    });
-    const saveSecondUserInDatabaseResult = await secondUserInDatabase.save();
-
-    placeInDatabaseId = savePlaceResult.id;
-    firstUserInDatabaseId = saveFirstUserInDatabaseResult._id;
-    secondUserInDatabaseId = saveSecondUserInDatabaseResult._id;
+    const setupResult = await setupHikeTest();
+    placeInDatabaseId = setupResult.placeInDatabaseId;
+    firstUserInDatabaseId = setupResult.firstUserInDatabaseId;
+    secondUserInDatabaseId = setupResult.secondUserInDatabaseId;
   });
 
   afterEach(async () => {
-    await HikeModel.deleteMany();
-    await PlaceModel.deleteMany();
-    await UserModel.deleteMany();
+    await teardownHikeTests();
   });
 
   describe("POST /hike", () => {
