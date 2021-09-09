@@ -187,7 +187,9 @@ export default function buildHikeRepository(): HikeRepository {
 
     delete: async (hikeId: string) => {
       try {
-        const deletionResult = await PlaceModel.deleteOne({ _id: hikeId });
+        const deletionResult = await HikeModel.deleteOne({
+          _id: hikeId,
+        });
 
         return {
           outcome: "SUCCESS",

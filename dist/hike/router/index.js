@@ -9,15 +9,12 @@ const getHike_1 = __importDefault(require("../controllers/getHike"));
 const getHikeByPlace_1 = __importDefault(require("../controllers/getHikeByPlace"));
 const getHikeById_1 = __importDefault(require("../controllers/getHikeById"));
 const editeHike_1 = __importDefault(require("../controllers/editeHike"));
+const deleteHike_1 = __importDefault(require("../controllers/deleteHike"));
 const hikeRouter = express_1.default.Router();
 hikeRouter.get("/", getHike_1.default);
 hikeRouter.get("/:hikeId", getHikeById_1.default);
 hikeRouter.get("/byPlace/:placeId", getHikeByPlace_1.default);
 hikeRouter.post("/", recordHike_1.default);
 hikeRouter.put("/:hikeId", editeHike_1.default);
-hikeRouter.delete("/", (req, res) => {
-    res.json({
-        message: "Deleting an hike",
-    });
-});
+hikeRouter.delete("/:hikeId", deleteHike_1.default);
 exports.default = hikeRouter;

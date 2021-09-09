@@ -149,6 +149,24 @@ function buildHikeRepository() {
                 };
             }
         }),
+        delete: (hikeId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const deletionResult = yield HikeModel_1.default.deleteOne({
+                    _id: hikeId,
+                });
+                return {
+                    outcome: "SUCCESS",
+                    data: deletionResult,
+                };
+            }
+            catch (error) {
+                return {
+                    outcome: "FAILURE",
+                    errorCode: "DATABASE_ERROR",
+                    detail: error,
+                };
+            }
+        }),
     };
 }
 exports.default = buildHikeRepository;

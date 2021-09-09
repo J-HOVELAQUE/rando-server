@@ -3,8 +3,6 @@ import buildServer from "../../server";
 import { Mongoose, ObjectId } from "mongoose";
 import supertest from "supertest";
 import HikeModel from "../model/HikeModel";
-import PlaceModel from "../../place/model/PlaceModel";
-import UserModel from "../../user/model/UserModel";
 import setupHikeTest from "./setupHikeTests";
 import teardownHikeTests from "./teardownHikeTests";
 
@@ -29,7 +27,6 @@ describe("GET /hike", () => {
     placeInDatabaseId = setupResult.placeInDatabaseId;
     firstUserInDatabaseId = setupResult.firstUserInDatabaseId;
     secondUserInDatabaseId = setupResult.secondUserInDatabaseId;
-    await HikeModel.deleteMany();
     const hikeInDatabase = new HikeModel({
       durationInMinutes: 120,
       elevationInMeters: 900,

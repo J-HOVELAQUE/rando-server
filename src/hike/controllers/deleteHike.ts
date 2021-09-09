@@ -13,5 +13,5 @@ export default async function deleteHike(req: Request, res: Response) {
     });
     return;
   }
-  res.json({ message: "place deleted", result: deleteResult.data });
+  res.json({ message: "hike deleted", result: deleteResult.data });
 }
