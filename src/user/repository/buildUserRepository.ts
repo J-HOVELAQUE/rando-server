@@ -46,7 +46,11 @@ export default function buildUserRepository(): UserRepository {
       } catch (error: any) {
         let errorCode: string = "DATABASE_ERROR";
         if (error.code && error.code === 11000) {
-          errorCode = "UNIQUE_CONSTRAIN_ERROR";
+          return {
+            outcome: "FAILURE",
+            errorCode: "UNIQUE_CONSTRAIN_ERROR",
+            detail: error,
+          };
         }
         return {
           outcome: "FAILURE",

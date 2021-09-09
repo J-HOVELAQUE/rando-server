@@ -27,11 +27,15 @@ function buildUserRepository() {
             catch (error) {
                 let errorCode = "DATABASE_ERROR";
                 if (error.code && error.code === 11000) {
-                    errorCode = "UNIQUE_CONSTRAIN_ERROR";
+                    return {
+                        outcome: "FAILURE",
+                        errorCode: "UNIQUE_CONSTRAIN_ERROR",
+                        detail: error,
+                    };
                 }
                 return {
                     outcome: "FAILURE",
-                    errorCode: errorCode,
+                    errorCode: "DATABASE_ERROR",
                     detail: error,
                 };
             }
@@ -45,6 +49,29 @@ function buildUserRepository() {
                 };
             }
             catch (error) {
+                return {
+                    outcome: "FAILURE",
+                    errorCode: "DATABASE_ERROR",
+                    detail: error,
+                };
+            }
+        }),
+        update: (userId, userData) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield UserModel_1.default.updateOne({ _id: userId }, userData);
+                return {
+                    outcome: "SUCCESS",
+                    data: result,
+                };
+            }
+            catch (error) {
+                if (error.name === "CastError") {
+                    return {
+                        outcome: "FAILURE",
+                        errorCode: "CAST_ERROR",
+                        detail: error,
+                    };
+                }
                 return {
                     outcome: "FAILURE",
                     errorCode: "DATABASE_ERROR",
