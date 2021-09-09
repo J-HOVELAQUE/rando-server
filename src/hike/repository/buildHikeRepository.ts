@@ -42,6 +42,7 @@ interface HikeRepository {
     hikeId: string,
     hikeData: HikeDataToUpdate
   ) => Promise<ResultRepoMethod<any>>;
+  delete: (hikeId: string) => Promise<ResultRepoMethod<any>>;
 }
 
 export default function buildHikeRepository(): HikeRepository {
@@ -176,6 +177,23 @@ export default function buildHikeRepository(): HikeRepository {
             detail: error,
           };
         }
+        return {
+          outcome: "FAILURE",
+          errorCode: "DATABASE_ERROR",
+          detail: error,
+        };
+      }
+    },
+
+    delete: async (hikeId: string) => {
+      try {
+        const deletionResult = await PlaceModel.deleteOne({ _id: hikeId });
+
+        return {
+          outcome: "SUCCESS",
+          data: deletionResult,
+        };
+      } catch (error: any) {
         return {
           outcome: "FAILURE",
           errorCode: "DATABASE_ERROR",
