@@ -36,7 +36,9 @@ export default async function (req: Request, res: Response) {
   }
 
   ///// Rec picture
-  if (req.files !== undefined) {
+  if (req.files) {
+    console.log(">>>>FILES", req.files);
+
     const uploadResult = await uploadImageFromFileArray(
       req.files,
       payload.name

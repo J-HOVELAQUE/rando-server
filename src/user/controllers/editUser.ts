@@ -5,8 +5,8 @@ import Joi, { ValidationError } from "joi";
 const userRepository = buildUserRepository();
 
 interface UserData {
-  name?: String;
-  firstname?: String;
+  name?: string;
+  firstname?: string;
   email?: string;
   dateOfBirth?: Date;
 }

@@ -36,7 +36,8 @@ function default_1(req, res) {
             return;
         }
         ///// Rec picture
-        if (req.files !== undefined) {
+        if (req.files) {
+            console.log(">>>>FILES", req.files);
             const uploadResult = yield uploadImageFromFileArray_1.default(req.files, payload.name);
             if (uploadResult.outcome === "FAILURE") {
                 res.status(400).json({
