@@ -23,6 +23,7 @@ interface PlaceDataToUpdate {
   mountainLocation?: string;
   altitudeInMeters?: number;
   city?: string;
+  picture?: string;
 }
 
 interface PlaceRepository {
