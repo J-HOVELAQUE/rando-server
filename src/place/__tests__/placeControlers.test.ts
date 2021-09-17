@@ -47,6 +47,9 @@ describe("Testing place controlers", () => {
               altitudeInMeters: 2030,
               mountainLocation: "Chablais",
               name: "Pointe de Chalune",
+              location: {
+                coordinates: [],
+              },
             },
           });
 
@@ -154,6 +157,9 @@ describe("Testing place controlers", () => {
                 altitudeInMeters: 2030,
                 mountainLocation: "Chablais",
                 name: "Pointe de Chalune",
+                location: {
+                  coordinates: [],
+                },
               },
               {
                 __v: 0,
@@ -161,6 +167,9 @@ describe("Testing place controlers", () => {
                 altitudeInMeters: 1800,
                 mountainLocation: "Chablais",
                 name: "Le Môle",
+                location: {
+                  coordinates: [],
+                },
               },
             ],
           });

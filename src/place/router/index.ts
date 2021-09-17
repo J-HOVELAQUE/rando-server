@@ -4,6 +4,7 @@ import getPlace from "../controllers/getPlace";
 import editPlaceData from "../controllers/editPlace";
 import deletePlace from "../controllers/deletePlace";
 import editPlacePicture from "../controllers/editPlacePicture";
+import setPlaceLocation from "../controllers/setPlaceLocation";
 
 const placeRouter = express.Router();
 
@@ -14,6 +15,8 @@ placeRouter.post("/", recordPlace);
 placeRouter.put("/:placeId", editPlaceData);
 
 placeRouter.put("/:placeId/picture", editPlacePicture);
+
+placeRouter.put("/:placeId/location", setPlaceLocation);
 
 placeRouter.delete("/:placeId", deletePlace);
 

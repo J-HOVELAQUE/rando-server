@@ -171,6 +171,9 @@ describe("GET /hike", () => {
                 altitudeInMeters: 2030,
                 mountainLocation: "Chablais",
                 name: "Pointe de Chalune",
+                location: {
+                  coordinates: [],
+                },
               },
               startingAltitude: 1000,
             },
