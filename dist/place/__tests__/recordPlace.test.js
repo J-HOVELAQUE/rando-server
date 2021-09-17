@@ -16,7 +16,7 @@ const createDatabaseConnection_1 = __importDefault(require("../../createDatabase
 const server_1 = __importDefault(require("../../server"));
 const PlaceModel_1 = __importDefault(require("../model/PlaceModel"));
 const supertest_1 = __importDefault(require("supertest"));
-describe("POST /place", () => {
+describe("POST '/place'", () => {
     let database;
     const app = server_1.default();
     beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
@@ -51,6 +51,9 @@ describe("POST /place", () => {
                         altitudeInMeters: 2030,
                         mountainLocation: "Chablais",
                         name: "Pointe de Chalune",
+                        location: {
+                            coordinates: [],
+                        },
                     },
                 });
                 const placesInDatabase = yield PlaceModel_1.default.find();
