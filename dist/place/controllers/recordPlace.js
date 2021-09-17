@@ -24,9 +24,10 @@ const placeSchema = joi_1.default.object({
 });
 function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const payload = req.body;
         ///// Payload validation
-        const { error, value } = placeSchema.validate(payload, { abortEarly: false });
+        const { error, value } = placeSchema.validate(req.body, {
+            abortEarly: false,
+        });
         if (error) {
             const errorMessages = error.details.map((err) => err.message);
             res.status(400).json({
@@ -35,10 +36,11 @@ function default_1(req, res) {
             });
             return;
         }
+        const payload = Object.assign({}, req.body);
         ///// Rec picture
         if (req.files) {
             console.log(">>>>FILES", req.files);
-            const uploadResult = yield uploadImageFromFileArray_1.default(req.files, payload.name);
+            const uploadResult = yield uploadImageFromFileArray_1.default(req.files, req.body.name);
             if (uploadResult.outcome === "FAILURE") {
                 res.status(400).json({
                     error: "payloadError",

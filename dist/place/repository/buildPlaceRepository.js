@@ -125,6 +125,34 @@ function buildPlaceRepository() {
                 };
             }
         }),
+        setLocation: (placeId, coordinates) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield PlaceModel_1.default.updateOne({ _id: placeId }, {
+                    location: {
+                        type: "Point",
+                        coordinates: [coordinates.lat, coordinates.long],
+                    },
+                });
+                return {
+                    outcome: "SUCCESS",
+                    data: result,
+                };
+            }
+            catch (error) {
+                if (error.name === "CastError") {
+                    return {
+                        outcome: "FAILURE",
+                        errorCode: "CAST_ERROR",
+                        detail: error,
+                    };
+                }
+                return {
+                    outcome: "FAILURE",
+                    errorCode: "DATABASE_ERROR",
+                    detail: error,
+                };
+            }
+        }),
     };
 }
 exports.default = buildPlaceRepository;

@@ -11,11 +11,9 @@ const placeSchema = new Schema<Place>({
     type: {
       type: String,
       enum: ["Point"],
-      required: true,
     },
     coordinates: {
       type: [Number],
-      required: true,
     },
   },
 });

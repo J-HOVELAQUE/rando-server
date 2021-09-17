@@ -7,6 +7,15 @@ const placeSchema = new mongoose_1.Schema({
     altitudeInMeters: { type: Number, required: true },
     city: String,
     picture: String,
+    location: {
+        type: {
+            type: String,
+            enum: ["Point"],
+        },
+        coordinates: {
+            type: [Number],
+        },
+    },
 });
 const PlaceModel = mongoose_1.model("Places", placeSchema);
 exports.default = PlaceModel;

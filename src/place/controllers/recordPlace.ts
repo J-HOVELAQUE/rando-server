@@ -21,10 +21,10 @@ const placeSchema = Joi.object({
 });
 
 export default async function (req: Request, res: Response) {
-  const payload: Place = req.body;
-
   ///// Payload validation
-  const { error, value } = placeSchema.validate(payload, { abortEarly: false });
+  const { error, value } = placeSchema.validate(req.body, {
+    abortEarly: false,
+  });
 
   if (error) {
     const errorMessages: String[] = error.details.map((err) => err.message);
@@ -35,13 +35,15 @@ export default async function (req: Request, res: Response) {
     return;
   }
 
+  const payload: Place = { ...req.body };
+
   ///// Rec picture
   if (req.files) {
     console.log(">>>>FILES", req.files);
 
     const uploadResult = await uploadImageFromFileArray(
       req.files,
-      payload.name
+      req.body.name
     );
 
     if (uploadResult.outcome === "FAILURE") {

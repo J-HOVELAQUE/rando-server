@@ -26,8 +26,23 @@ interface PlaceDataToUpdate {
   picture?: string;
 }
 
+interface PlaceDataToCreate {
+  name: string;
+  mountainLocation: string;
+  altitudeInMeters: number;
+  picture?: string;
+  city?: string;
+}
+
+interface Coordinates {
+  lat: number;
+  long: number;
+}
+
 interface PlaceRepository {
-  create: (placeToCreate: Place) => Promise<ResultRepoMethod<Place>>;
+  create: (
+    placeToCreate: PlaceDataToCreate
+  ) => Promise<ResultRepoMethod<Place>>;
   findAll: () => Promise<ResultRepoMethod<Place[]>>;
   findOne: (id: string) => Promise<ResultRepoMethod<Place>>;
   update: (
@@ -35,11 +50,15 @@ interface PlaceRepository {
     placeData: PlaceDataToUpdate
   ) => Promise<ResultRepoMethod<any>>;
   delete: (placeId: string) => Promise<ResultRepoMethod<any>>;
+  setLocation: (
+    placeId: string,
+    coordinates: Coordinates
+  ) => Promise<ResultRepoMethod<any>>;
 }
 
 export default function buildPlaceRepository(): PlaceRepository {
   return {
-    create: async (placeToCreate: Place) => {
+    create: async (placeToCreate: PlaceDataToCreate) => {
       try {
         const newPlace = new PlaceModel(placeToCreate);
         const dbAnswer = await newPlace.save();
@@ -145,6 +164,37 @@ export default function buildPlaceRepository(): PlaceRepository {
           data: deletionResult,
         };
       } catch (error: any) {
+        return {
+          outcome: "FAILURE",
+          errorCode: "DATABASE_ERROR",
+          detail: error,
+        };
+      }
+    },
+
+    setLocation: async (placeId: string, coordinates: Coordinates) => {
+      try {
+        const result = await PlaceModel.updateOne(
+          { _id: placeId },
+          {
+            location: {
+              type: "Point",
+              coordinates: [coordinates.lat, coordinates.long],
+            },
+          }
+        );
+        return {
+          outcome: "SUCCESS",
+          data: result,
+        };
+      } catch (error: any) {
+        if (error.name === "CastError") {
+          return {
+            outcome: "FAILURE",
+            errorCode: "CAST_ERROR",
+            detail: error,
+          };
+        }
         return {
           outcome: "FAILURE",
           errorCode: "DATABASE_ERROR",
