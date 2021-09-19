@@ -110,7 +110,16 @@ describe("GET /hike", () => {
                                 name: "Golotte",
                             },
                         ],
-                        place: expect.any(String),
+                        place: {
+                            __v: 0,
+                            _id: expect.any(String),
+                            altitudeInMeters: 2030,
+                            location: {
+                                coordinates: [],
+                            },
+                            mountainLocation: "Chablais",
+                            name: "Pointe de Chalune",
+                        },
                         startingAltitude: 1000,
                     },
                     message: "hike founded",

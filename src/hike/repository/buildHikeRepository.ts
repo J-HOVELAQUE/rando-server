@@ -67,6 +67,7 @@ export default function buildHikeRepository(): HikeRepository {
       try {
         const hikeForThisId: Hike | null = await HikeModel.findById(hikeId)
           .populate("participants")
+          .populate("place")
           .exec();
         if (hikeForThisId === null) {
           return {

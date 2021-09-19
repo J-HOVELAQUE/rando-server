@@ -37,6 +37,7 @@ function buildHikeRepository() {
             try {
                 const hikeForThisId = yield HikeModel_1.default.findById(hikeId)
                     .populate("participants")
+                    .populate("place")
                     .exec();
                 if (hikeForThisId === null) {
                     return {
