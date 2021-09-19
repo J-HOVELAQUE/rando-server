@@ -33,6 +33,7 @@ describe("PUT '/:placeId'", () => {
   afterEach(async () => {
     await PlaceModel.deleteMany();
   });
+
   describe("Given that I wish to update a place in database", () => {
     describe("When I PUT a valid payload and existing id as params on /place", () => {
       it("Then I receive a success and the document is updated", async () => {
