@@ -8,6 +8,8 @@ import supertest from "supertest";
 describe("GET '/place'", () => {
   let database: Mongoose;
   const app = buildServer();
+  let firstPlaceId: string;
+  let secondPlaceId: string;
 
   beforeAll(async () => {
     database = await createConnection();
@@ -29,8 +31,10 @@ describe("GET '/place'", () => {
       mountainLocation: "Chablais",
       altitudeInMeters: 1800,
     });
-    await firstPlace.save();
-    await secondPlace.save();
+    const firstSaveResult = await firstPlace.save();
+    const secondSaveResult = await secondPlace.save();
+    firstPlaceId = firstSaveResult.id;
+    secondPlaceId = secondSaveResult.id;
   });
 
   afterEach(async () => {
@@ -43,7 +47,7 @@ describe("GET '/place'", () => {
         const answer = await supertest(app).get("/place").expect(200);
 
         expect(answer.body).toEqual({
-          message: "there is 2 in database",
+          message: "there is 2 places in database",
           places: [
             {
               __v: 0,
@@ -91,6 +95,30 @@ describe("GET '/place'", () => {
           expect(secondRecordedPlace.name).toBe("Le Môle");
           expect(secondRecordedPlace.__v).toBe(0);
         }
+      });
+    });
+  });
+
+  describe("Given that I wish to get place data with an id", () => {
+    describe("When I GET on /place with a valid id as data", () => {
+      it("Then I receive success and the place data", async () => {
+        const answer = await supertest(app)
+          .get("/place/" + firstPlaceId)
+          .expect(200);
+
+        expect(answer.body).toEqual({
+          message: "place founded",
+          place: {
+            __v: 0,
+            _id: expect.any(String),
+            altitudeInMeters: 2030,
+            location: {
+              coordinates: [],
+            },
+            mountainLocation: "Chablais",
+            name: "Pointe de Chalune",
+          },
+        });
       });
     });
   });

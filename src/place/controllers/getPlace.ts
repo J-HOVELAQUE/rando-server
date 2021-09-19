@@ -15,7 +15,7 @@ export default async function (req: Request, res: Response) {
   }
 
   res.status(200).json({
-    message: `there is ${getPlacesResult.data.length} in database`,
+    message: `there is ${getPlacesResult.data.length} places in database`,
     places: getPlacesResult.data,
   });
 }
