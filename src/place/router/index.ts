@@ -5,10 +5,13 @@ import editPlaceData from "../controllers/editPlace";
 import deletePlace from "../controllers/deletePlace";
 import editPlacePicture from "../controllers/editPlacePicture";
 import setPlaceLocation from "../controllers/setPlaceLocation";
+import getPlaceById from "../controllers/getPlaceById";
 
 const placeRouter = express.Router();
 
 placeRouter.get("/", getPlace);
+
+placeRouter.get("/:placeId", getPlaceById);
 
 placeRouter.post("/", recordPlace);
 
