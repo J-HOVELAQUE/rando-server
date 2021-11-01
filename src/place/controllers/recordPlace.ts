@@ -21,6 +21,8 @@ const placeSchema = Joi.object({
 });
 
 export default async function (req: Request, res: Response) {
+  console.log("PAYLOAD", req.body);
+
   ///// Payload validation
   const { error, value } = placeSchema.validate(req.body, {
     abortEarly: false,

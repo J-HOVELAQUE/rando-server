@@ -33,6 +33,8 @@ export default async function editHikeData(req: Request, res: Response) {
   const payload: HikeData = req.body;
   const hikeToUpdateId: string = req.params.hikeId;
 
+  console.log(payload);
+
   ///// Payload validation
   const { error, value } = hikeDataSchema.validate(payload, {
     abortEarly: false,

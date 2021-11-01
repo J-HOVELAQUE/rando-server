@@ -30,6 +30,7 @@ function editHikeData(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const payload = req.body;
         const hikeToUpdateId = req.params.hikeId;
+        console.log(payload);
         ///// Payload validation
         const { error, value } = hikeDataSchema.validate(payload, {
             abortEarly: false,

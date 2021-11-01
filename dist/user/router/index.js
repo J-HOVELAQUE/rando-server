@@ -7,8 +7,10 @@ const express_1 = __importDefault(require("express"));
 const getUser_1 = __importDefault(require("../controllers/getUser"));
 const recordUser_1 = __importDefault(require("../controllers/recordUser"));
 const editUser_1 = __importDefault(require("../controllers/editUser"));
+const getDataForAYear_1 = __importDefault(require("../controllers/getDataForAYear"));
 const userRouter = express_1.default.Router();
 userRouter.get("/", getUser_1.default);
+userRouter.get("/:userId/data", getDataForAYear_1.default);
 userRouter.post("/", recordUser_1.default);
 userRouter.put("/:userId", editUser_1.default);
 userRouter.delete("/", (req, res) => {

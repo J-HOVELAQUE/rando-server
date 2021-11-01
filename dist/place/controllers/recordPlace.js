@@ -24,6 +24,7 @@ const placeSchema = joi_1.default.object({
 });
 function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log("PAYLOAD", req.body);
         ///// Payload validation
         const { error, value } = placeSchema.validate(req.body, {
             abortEarly: false,
