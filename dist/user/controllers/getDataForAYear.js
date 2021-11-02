@@ -8,10 +8,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const buildUserRepository_1 = __importDefault(require("../repository/buildUserRepository"));
+const userRepository = buildUserRepository_1.default();
 function default_1(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        res.json({ message: `here is the data for ${req.params.userId}` });
+        const requestDataResult = yield userRepository.getHikeData(req.params.userId);
+        if (requestDataResult.outcome === "FAILURE") {
+            if (requestDataResult.errorCode === "INVALID_ID") {
+                res.status(400).json({
+                    error: "Bad request",
+                    detail: "invalid uuid",
+                });
+                return;
+            }
+            res.status(503).json({
+                error: "databaseError",
+                details: requestDataResult.detail,
+            });
+            return;
+        }
+        res.json({
+            message: `here is the data for ${req.params.userId}`,
+            data: requestDataResult.data,
+        });
     });
 }
 exports.default = default_1;
