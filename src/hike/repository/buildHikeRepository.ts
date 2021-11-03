@@ -11,7 +11,8 @@ type HikeRepositoryError =
   | "FOREIGN_KEY_PLACE_ERROR"
   | "UNIQUE_CONSTRAIN_ERROR"
   | "FOREIGN_KEY_USER_ERROR"
-  | "CAST_ERROR";
+  | "CAST_ERROR"
+  | "INVALID_ID";
 
 interface HikeRepositoryOutcomeFailure extends OutcomeFailure {
   errorCode: HikeRepositoryError;
@@ -37,6 +38,7 @@ interface HikeRepository {
   create: (hikeToCreate: Hike) => Promise<ResultRepoMethod<Hike>>;
   findAll: () => Promise<ResultRepoMethod<Hike[]>>;
   findByPlace: (placeId: string) => Promise<ResultRepoMethod<Hike[]>>;
+  findByUser: (userId: string) => Promise<ResultRepoMethod<Hike[]>>;
   findById: (hikeId: string) => Promise<ResultRepoMethod<Hike>>;
   update: (
     hikeId: string,
@@ -94,6 +96,40 @@ export default function buildHikeRepository(): HikeRepository {
       try {
         const hikesInDatabase: Hike[] = await HikeModel.find({
           place: placeId,
+        })
+          .populate("participants")
+          .populate("place")
+          .exec();
+
+        return {
+          outcome: "SUCCESS",
+          data: hikesInDatabase,
+        };
+      } catch (error: any) {
+        return {
+          outcome: "FAILURE",
+          errorCode: "DATABASE_ERROR",
+          detail: error,
+        };
+      }
+    },
+
+    findByUser: async (userId: string) => {
+      let userObjectId: mongoose.Types.ObjectId;
+
+      try {
+        userObjectId = mongoose.Types.ObjectId(userId);
+      } catch (error: any) {
+        return {
+          outcome: "FAILURE",
+          errorCode: "INVALID_ID",
+          detail: error,
+        };
+      }
+
+      try {
+        const hikesInDatabase: Hike[] = await HikeModel.find({
+          participants: userObjectId,
         })
           .populate("participants")
           .populate("place")

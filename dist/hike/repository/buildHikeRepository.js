@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const HikeModel_1 = __importDefault(require("../model/HikeModel"));
 const PlaceModel_1 = __importDefault(require("../../place/model/PlaceModel"));
 const UserModel_1 = __importDefault(require("../../user/model/UserModel"));
+const mongoose_1 = __importDefault(require("mongoose"));
 function buildHikeRepository() {
     return {
         findAll: () => __awaiter(this, void 0, void 0, function* () {
@@ -63,6 +64,38 @@ function buildHikeRepository() {
             try {
                 const hikesInDatabase = yield HikeModel_1.default.find({
                     place: placeId,
+                })
+                    .populate("participants")
+                    .populate("place")
+                    .exec();
+                return {
+                    outcome: "SUCCESS",
+                    data: hikesInDatabase,
+                };
+            }
+            catch (error) {
+                return {
+                    outcome: "FAILURE",
+                    errorCode: "DATABASE_ERROR",
+                    detail: error,
+                };
+            }
+        }),
+        findByUser: (userId) => __awaiter(this, void 0, void 0, function* () {
+            let userObjectId;
+            try {
+                userObjectId = mongoose_1.default.Types.ObjectId(userId);
+            }
+            catch (error) {
+                return {
+                    outcome: "FAILURE",
+                    errorCode: "INVALID_ID",
+                    detail: error,
+                };
+            }
+            try {
+                const hikesInDatabase = yield HikeModel_1.default.find({
+                    participants: userObjectId,
                 })
                     .populate("participants")
                     .populate("place")
