@@ -5,6 +5,7 @@ import getHikeByPlace from "../controllers/getHikeByPlace";
 import getHikeById from "../controllers/getHikeById";
 import editHikeData from "../controllers/editeHike";
 import deleteHike from "../controllers/deleteHike";
+import getHikeByUser from "../controllers/getByUser";
 
 const hikeRouter = express.Router();
 
@@ -13,6 +14,8 @@ hikeRouter.get("/", getHike);
 hikeRouter.get("/:hikeId", getHikeById);
 
 hikeRouter.get("/byPlace/:placeId", getHikeByPlace);
+
+hikeRouter.get("/byUser/:userId", getHikeByUser);
 
 hikeRouter.post("/", recordHike);
 
